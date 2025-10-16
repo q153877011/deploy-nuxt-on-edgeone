@@ -8,6 +8,7 @@
     "@vue/compiler-core": "3.5.22",
     "@vue/compiler-dom": "3.5.22",
     "@vue/compiler-ssr": "3.5.22",
+    "@vue/devtools-api": "6.6.4",
     "@vue/reactivity": "3.5.22",
     "@vue/runtime-core": "3.5.22",
     "@vue/runtime-dom": "3.5.22",
@@ -17,10 +18,12 @@
     "entities": "4.5.0",
     "estree-walker": "2.0.2",
     "hookable": "5.5.3",
+    "perfect-debounce": "2.0.0",
     "source-map-js": "1.2.1",
     "ufo": "1.6.1",
     "unhead": "2.0.19",
     "vue": "3.5.22",
-    "vue-bundle-renderer": "2.2.0"
+    "vue-bundle-renderer": "2.2.0",
+    "vue-router": "4.5.1"
   }
 }
