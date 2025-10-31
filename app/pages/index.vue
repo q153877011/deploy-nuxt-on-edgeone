@@ -1,9 +1,7 @@
 <template>
   <div>
     <h1>Welcome to the homepage</h1>
-    <AppAlert>
-      This is an auto-imported component
-    </AppAlert>
+    <p>This is an auto-imported component</p>
     
     <!-- 显示 API 数据 -->
     <div v-if="pending" class="loading">
@@ -18,7 +16,17 @@
       <button @click="refresh()" :disabled="pending">
         {{ pending ? '刷新中...' : '刷新数据' }}
       </button>
+
+    <div><nav>
+      <ul>
+        <li><NuxtLink to="/about">关于</NuxtLink></li>
+        <li><NuxtLink to="/posts/1">文章 1</NuxtLink></li>
+        <li><NuxtLink to="/posts/2">文章 2</NuxtLink></li>
+      </ul>
+    </nav></div>
     </div>
+
+    <img src="/avator.jpg" alt="Logo" width="100px" height="100px"/>
   </div>
 </template>
 

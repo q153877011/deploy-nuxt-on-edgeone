@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "edgeone pages deploy .edgeone -n test-opensource-deploy -e production"
   },
   "dependencies": {
     "nuxt": "^4.1.3",

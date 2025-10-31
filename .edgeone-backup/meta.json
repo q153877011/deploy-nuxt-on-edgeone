@@ -1,0 +1,32 @@
+{
+  "conf": {
+    "headers": [],
+    "redirects": [],
+    "rewrites": [],
+    "caches": [],
+    "has404": true
+  },
+  "has404": true,
+  "nextRoutes": [
+    {
+      "path": "/about",
+      "isStatic": true,
+      "srcRoute": "/assets/about/index.html"
+    },
+    {
+      "path": "/"
+    },
+    {
+      "path": "/test-ssr"
+    },
+    {
+      "path": "/test-isr"
+    },
+    {
+      "path": "/api/server-test"
+    },
+    {
+      "path": "/api/time"
+    }
+  ]
+}
