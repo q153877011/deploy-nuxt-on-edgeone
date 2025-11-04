@@ -14,7 +14,15 @@
         <h3>页面信息</h3>
         <ul>
           <li><strong>API生成时间:</strong> {{ generatedAt }}</li>
-          <li><strong>页面生成时间:</strong> {{ pageGeneratedAt }}</li>
+          <li>
+            <strong>页面生成时间:</strong> 
+            <ClientOnly>
+              {{ pageGeneratedAt }}
+              <template #fallback>
+                服务端渲染
+              </template>
+            </ClientOnly>
+          </li>
           <li><strong>随机ID:</strong> {{ randomId }}</li>
           <li><strong>SWR 重新验证:</strong> 10秒</li>
           <li><strong>页面类型:</strong> 增量静态再生 (SWR)</li>
@@ -44,7 +52,13 @@ const randomId = computed(() => timeData.value?.randomId || 0)
 const generatedAt = computed(() => timeData.value?.generatedAt || '')
 
 // 添加页面生成时间戳用于验证缓存
-const pageGeneratedAt = process.server ? new Date().toISOString() : 'Client-side'
+// 使用 computed 并在 ClientOnly 中显示，避免 hydration mismatch
+// 服务端渲染时使用 API 的时间，客户端水合后显示实际时间
+const pageGeneratedAt = computed(() => {
+  // 使用 API 返回的时间作为基准，确保服务端和客户端一致
+  // 如果 API 时间不可用，才使用当前时间
+  return generatedAt.value || new Date().toISOString()
+})
 
 // 设置页面标题
 useHead({

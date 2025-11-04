@@ -1,7 +1,14 @@
 <template>
   <section style="padding: 24px;">
     <h1>SSR 示例页面</h1>
-    <p>首次渲染：{{ isServer ? '服务端' : '客户端' }}</p>
+    
+    <!-- 使用 ClientOnly 包装可能在服务端和客户端不一致的内容 -->
+    <ClientOnly>
+      <p>首次渲染：客户端</p>
+      <template #fallback>
+        <p>首次渲染：服务端</p>
+      </template>
+    </ClientOnly>
 
     <div v-if="error">加载失败：{{ error.message }}</div>
     <div v-else-if="pending">加载中...</div>
@@ -15,11 +22,10 @@
  </template>
 
 <script setup lang="ts">
-import { useAsyncData, useRequestHeaders } from '#app'
-
-const isServer = typeof window === 'undefined'
-
+// 使用 useAsyncData，确保服务端和客户端使用相同的逻辑
 const { data, pending, error, refresh } = useAsyncData('ssr-example', async () => {
+  // 根据运行环境获取用户代理
+  const isServer = typeof window === 'undefined'
   const ua = isServer
     ? (useRequestHeaders(['user-agent'])['user-agent'] || '')
     : (typeof navigator !== 'undefined' ? navigator.userAgent : '')
@@ -28,7 +34,12 @@ const { data, pending, error, refresh } = useAsyncData('ssr-example', async () =
     serverTime: new Date().toISOString(),
     userAgent: ua
   }
-}, { server: true, default: () => ({ serverTime: '', userAgent: '' }) })
+}, { 
+  // 只在服务端执行，客户端使用服务端返回的数据进行水合
+  server: true,
+  // 提供默认值，避免初始渲染时的错误
+  default: () => ({ serverTime: '', userAgent: '' })
+})
 </script>
 
 <style scoped>
