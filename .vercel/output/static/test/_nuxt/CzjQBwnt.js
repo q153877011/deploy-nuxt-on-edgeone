@@ -1,1 +1,0 @@
-import{_ as t,c as r,a as s,o as n}from"#entry";const o={};function a(c,e){return n(),r("section",null,[...e[0]||(e[0]=[s("p",null,"test prerender page!!!",-1)])])}const p=t(o,[["render",a]]);export{p as default};

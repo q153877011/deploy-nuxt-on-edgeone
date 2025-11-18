@@ -1,4 +1,4 @@
-import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, computed, hasInjectionContext, getCurrentInstance, defineAsyncComponent, inject, unref, provide, shallowReactive, createElementBlock, ref, Suspense, Fragment, useSSRContext, createApp, mergeProps, withCtx, createTextVNode, toRef, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, getCurrentScope, nextTick } from 'vue';
+import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, hasInjectionContext, inject, computed, getCurrentInstance, defineAsyncComponent, unref, provide, shallowReactive, createElementBlock, ref, Suspense, Fragment, useSSRContext, createApp, mergeProps, withCtx, createTextVNode, toRef, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, getCurrentScope, nextTick } from 'vue';
 import { p as parseQuery, o as getRequestHeaders, c as createError$1, q as hasProtocol, m as joinURL, w as withQuery, t as withTrailingSlash, v as withoutTrailingSlash, x as isScriptProtocol, y as getContext, z as sanitizeStatusCode, $ as $fetch, A as createHooks, B as executeAsync, C as toRouteMatcher, D as createRouter$1, E as defu } from '../nitro/nitro.mjs';
 import { b as baseURL } from '../routes/renderer.mjs';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
@@ -385,6 +385,11 @@ async function getRouteRules(arg) {
 }
 const _routes = [
   {
+    name: "auth",
+    path: "/auth",
+    component: () => import('./auth-DV2nyy4T.mjs')
+  },
+  {
     name: "about",
     path: "/about",
     component: () => import('./about-BCXJ-JM8.mjs')
@@ -392,7 +397,7 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-C95nm_vp.mjs')
+    component: () => import('./index-CB2kdPks.mjs')
   },
   {
     name: "stream",
@@ -402,7 +407,7 @@ const _routes = [
   {
     name: "test-isr",
     path: "/test-isr",
-    component: () => import('./test-isr-DczBsl_R.mjs')
+    component: () => import('./test-isr-CwcwIsxX.mjs')
   },
   {
     name: "test-ssg",
@@ -412,12 +417,22 @@ const _routes = [
   {
     name: "test-ssr",
     path: "/test-ssr",
-    component: () => import('./test-ssr-CZfDXINT.mjs')
+    component: () => import('./test-ssr-Cle3nGgf.mjs')
+  },
+  {
+    name: "dashboard",
+    path: "/dashboard",
+    component: () => import('./dashboard-CHLi1NRq.mjs')
+  },
+  {
+    name: "test-id",
+    path: "/test/:id()",
+    component: () => import('./_id_-TOrsvr4Y.mjs')
   },
   {
     name: "posts-id",
     path: "/posts/:id()",
-    component: () => import('./_id_-6H6I3X3k.mjs')
+    component: () => import('./_id_-ClOm1ByL.mjs')
   },
   {
     name: "cookies-ssr",
@@ -533,6 +548,9 @@ const validate = /* @__PURE__ */ defineNuxtRouteMiddleware(async (to, from) => {
   });
   return error;
 });
+const auth_45global = /* @__PURE__ */ defineNuxtRouteMiddleware((to, from) => {
+  console.log(`🛡️ 全局中间件执行: ${from.path} → ${to.path}`);
+});
 const manifest_45route_45rule = /* @__PURE__ */ defineNuxtRouteMiddleware(async (to) => {
   {
     return;
@@ -540,6 +558,7 @@ const manifest_45route_45rule = /* @__PURE__ */ defineNuxtRouteMiddleware(async 
 });
 const globalMiddleware = [
   validate,
+  auth_45global,
   manifest_45route_45rule
 ];
 const namedMiddleware = {};
@@ -800,7 +819,7 @@ const plugins = [
   prerender_server_sqIxOBipVr4FbVMA9kqWL0wT8FPop6sKAXLVfifsJzk
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-Dq0p7Cwz.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-BjsE1AEK.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1466,7 +1485,7 @@ let entry;
     return vueApp;
   };
 }
-const entry$1 = (ssrContext) => entry(ssrContext);
+const entry_default = (ssrContext) => entry(ssrContext);
 
-export { _export_sfc as _, __nuxt_component_0 as a, useRequestFetch as b, useRequestHeaders as c, asyncDataDefaults as d, entry$1 as default, createError as e, fetchDefaults as f, useNuxtApp as u };
+export { _export_sfc as _, __nuxt_component_0 as a, useRequestFetch as b, useRequestHeaders as c, useNuxtApp as d, entry_default as default, asyncDataDefaults as e, fetchDefaults as f, createError as g, useRequestEvent as h, useRoute as u };
 //# sourceMappingURL=server.mjs.map

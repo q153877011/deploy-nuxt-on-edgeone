@@ -7,7 +7,7 @@ const cookiesOnClient = ref<Record<string, string>>({})
 
 // 在客户端发起请求，确保浏览器接收 Set-Cookie
 onMounted(async () => {
-  const res = await fetch('/api/cookies-test-v6', { method: 'GET' })
+  const res = await fetch('/api/cookies-test', { method: 'GET' })
   try {
     data.value = (await res.json()) as any
   } catch {
