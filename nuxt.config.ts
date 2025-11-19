@@ -24,7 +24,7 @@ export default defineNuxtConfig({
   //     serverDir: '.edgeone/server-handler'
   //   }
   // }
-  nitro: {
-    preset: 'netlify'
-  }
+  // nitro: {
+  //   preset: 'netlify'
+  // }
 })
