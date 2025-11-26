@@ -5,6 +5,13 @@ export default defineEventHandler(async (event) => {
   // 生成随机ID用于验证缓存
   const randomId = Math.floor(Math.random() * 10000)
   
+  return createError({
+    statusCode: 404,
+    statusMessage: 'Not Found',
+    data: {
+      message: 'Not Found'
+    }
+  })
   // 返回时间数据
   return {
     localTime: now.toLocaleString('zh-CN', {

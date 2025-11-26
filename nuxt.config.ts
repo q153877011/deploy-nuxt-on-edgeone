@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  srcDir: 'app',
+srcDir: 'app',
 
   routeRules: {
     '/about': {
@@ -23,8 +23,6 @@ export default defineNuxtConfig({
   //     publicDir: '.edgeone/assets',
   //     serverDir: '.edgeone/server-handler'
   //   }
-  // }
-  nitro: {
-    preset: 'netlify'
-  }
+  // },
+  nitro: {}
 })

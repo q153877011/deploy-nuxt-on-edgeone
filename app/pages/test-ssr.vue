@@ -13,33 +13,31 @@
     <div v-if="error">加载失败：{{ error.message }}</div>
     <div v-else-if="pending">加载中...</div>
     <div v-else-if="data">
-      <p>服务器时间：{{ data.serverTime }}</p>
-      <p>用户代理：{{ data.userAgent }}</p>
+      <p>服务器时间：{{ data.localTime }}</p>
+      <p>生成时间：{{ data.generatedAt }}</p>
+      <p>随机ID：{{ data.randomId }}</p>
+      <p>时间戳：{{ data.timestamp }}</p>
+      <p>时区：{{ data.timezone }}</p>
     </div>
 
     <button @click="() => refresh()">刷新数据（客户端）</button>
   </section>
  </template>
 
-<script setup lang="ts">
-// 使用 useAsyncData，确保服务端和客户端使用相同的逻辑
-const { data, pending, error, refresh } = useAsyncData('ssr-example', async () => {
-  // 根据运行环境获取用户代理
-  const isServer = typeof window === 'undefined'
-  const ua = isServer
-    ? (useRequestHeaders(['user-agent'])['user-agent'] || '')
-    : (typeof navigator !== 'undefined' ? navigator.userAgent : '')
-
-  return {
-    serverTime: new Date().toISOString(),
-    userAgent: ua
-  }
-}, { 
-  // 只在服务端执行，客户端使用服务端返回的数据进行水合
-  server: true,
-  // 提供默认值，避免初始渲染时的错误
-  default: () => ({ serverTime: '', userAgent: '' })
+<script setup>
+// 使用 useFetch 调用 API 端点获取服务器时间
+const { data, pending, error, refresh } = await useFetch('/api/time', {
+  server: true, // 确保在服务器端执行
+  key: 'time-data', // 缓存键
+  default: () => ({ 
+    localTime: '', 
+    randomId: 0, 
+    generatedAt: '', 
+    timestamp: 0, 
+    timezone: '' 
+  })
 })
+console.log(data.value, pending.value, error.value)
 </script>
 
 <style scoped>

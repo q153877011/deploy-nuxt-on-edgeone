@@ -1,5 +1,5 @@
 import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, hasInjectionContext, inject, computed, getCurrentInstance, defineAsyncComponent, unref, provide, shallowReactive, createElementBlock, ref, Suspense, Fragment, useSSRContext, createApp, mergeProps, withCtx, createTextVNode, toRef, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, getCurrentScope, nextTick } from 'vue';
-import { p as parseQuery, o as getRequestHeaders, c as createError$1, q as hasProtocol, m as joinURL, w as withQuery, t as withTrailingSlash, v as withoutTrailingSlash, x as isScriptProtocol, y as getContext, z as sanitizeStatusCode, $ as $fetch, A as createHooks, B as executeAsync, C as toRouteMatcher, D as createRouter$1, E as defu } from '../nitro/nitro.mjs';
+import { p as parseQuery, c as createError$1, o as hasProtocol, m as joinURL, w as withQuery, q as withTrailingSlash, t as withoutTrailingSlash, v as isScriptProtocol, x as getContext, y as sanitizeStatusCode, $ as $fetch, z as createHooks, A as executeAsync, B as toRouteMatcher, C as createRouter$1, D as defu } from '../nitro/nitro.mjs';
 import { b as baseURL } from '../routes/renderer.mjs';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderSuspense, ssrRenderVNode } from 'vue/server-renderer';
@@ -387,7 +387,7 @@ const _routes = [
   {
     name: "auth",
     path: "/auth",
-    component: () => import('./auth-DV2nyy4T.mjs')
+    component: () => import('./auth-CB8MvoUS.mjs')
   },
   {
     name: "about",
@@ -407,7 +407,7 @@ const _routes = [
   {
     name: "test-isr",
     path: "/test-isr",
-    component: () => import('./test-isr-CwcwIsxX.mjs')
+    component: () => import('./test-isr-CrRZ2kjl.mjs')
   },
   {
     name: "test-ssg",
@@ -417,12 +417,12 @@ const _routes = [
   {
     name: "test-ssr",
     path: "/test-ssr",
-    component: () => import('./test-ssr-Cle3nGgf.mjs')
+    component: () => import('./test-ssr-jhN51iDf.mjs')
   },
   {
     name: "dashboard",
     path: "/dashboard",
-    component: () => import('./dashboard-CHLi1NRq.mjs')
+    component: () => import('./dashboard-B6KIV2mp.mjs')
   },
   {
     name: "test-id",
@@ -786,22 +786,6 @@ const components_plugin_4kY4pyzJIYX99vmMAAIorFf3CnAaptHitJgf7JxiED8 = /* @__PURE
 function useRequestEvent(nuxtApp) {
   nuxtApp ||= useNuxtApp();
   return nuxtApp.ssrContext?.event;
-}
-function useRequestHeaders(include) {
-  const event = useRequestEvent();
-  const _headers = event ? getRequestHeaders(event) : {};
-  if (!include || !event) {
-    return _headers;
-  }
-  const headers = /* @__PURE__ */ Object.create(null);
-  for (const _key of include) {
-    const key = _key.toLowerCase();
-    const header = _headers[key];
-    if (header) {
-      headers[key] = header;
-    }
-  }
-  return headers;
 }
 function useRequestFetch() {
   return useRequestEvent()?.$fetch || globalThis.$fetch;
@@ -1487,5 +1471,5 @@ let entry;
 }
 const entry_default = (ssrContext) => entry(ssrContext);
 
-export { _export_sfc as _, __nuxt_component_0 as a, useRequestFetch as b, useRequestHeaders as c, useNuxtApp as d, entry_default as default, asyncDataDefaults as e, fetchDefaults as f, createError as g, useRequestEvent as h, useRoute as u };
+export { _export_sfc as _, __nuxt_component_0 as a, useNuxtApp as b, asyncDataDefaults as c, createError as d, entry_default as default, useRequestFetch as e, fetchDefaults as f, useRequestEvent as g, useRoute as u };
 //# sourceMappingURL=server.mjs.map
