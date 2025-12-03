@@ -11,7 +11,6 @@
     "deploy": "edgeone pages deploy .edgeone -n test-nuxt-deploy -t yZd0GbEQUbq0v9D++fY5vMABPRJ1loonc2l+jA8ZiOI="
   },
   "dependencies": {
-    "edgeone": "^1.2.0",
     "nuxt": "^4.1.3",
     "vue": "^3.5.22",
     "vue-router": "^4.5.1"
