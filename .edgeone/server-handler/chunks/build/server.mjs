@@ -405,11 +405,6 @@ const _routes = [
     component: () => import('./stream-BgfSWS2r.mjs')
   },
   {
-    name: "all",
-    path: "/:all(.*)*",
-    component: () => import('./_...all_-CxqHn5Mi.mjs')
-  },
-  {
     name: "test-isr",
     path: "/test-isr",
     component: () => import('./test-isr-CrRZ2kjl.mjs')
