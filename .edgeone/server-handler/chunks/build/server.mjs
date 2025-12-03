@@ -385,6 +385,11 @@ async function getRouteRules(arg) {
 }
 const _routes = [
   {
+    name: "id",
+    path: "/:id()",
+    component: () => import('./_id_-CyhGmwdy.mjs')
+  },
+  {
     name: "auth",
     path: "/auth",
     component: () => import('./auth-CB8MvoUS.mjs')
