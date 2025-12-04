@@ -38,7 +38,7 @@ const { data, pending, error, refresh } = await useFetch('/api/time', {
   })
 })
 
-const { data: testData } = await useFetch('/api/query-test?name=张三&age=25&active=true', {
+const { data: testData } = await useFetch('/api/seconde/query-test?name=张三&age=25&active=true', {
   server: true,
   key: 'test-data',
   default: () => ({

@@ -422,7 +422,7 @@ const _routes = [
   {
     name: "test-ssr",
     path: "/test-ssr",
-    component: () => import('./test-ssr-DB7B-KSg.mjs')
+    component: () => import('./test-ssr-ChVx5-9U.mjs')
   },
   {
     name: "dashboard",
