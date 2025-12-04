@@ -385,11 +385,6 @@ async function getRouteRules(arg) {
 }
 const _routes = [
   {
-    name: "id",
-    path: "/:id()",
-    component: () => import('./_id_-CyhGmwdy.mjs')
-  },
-  {
     name: "auth",
     path: "/auth",
     component: () => import('./auth-CB8MvoUS.mjs')
@@ -408,6 +403,11 @@ const _routes = [
     name: "stream",
     path: "/stream",
     component: () => import('./stream-BgfSWS2r.mjs')
+  },
+  {
+    name: "id",
+    path: "/:id(.*)*",
+    component: () => import('./_...id_-GUa8RNDN.mjs')
   },
   {
     name: "test-isr",
