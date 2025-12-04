@@ -1,5 +1,5 @@
 import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, hasInjectionContext, inject, computed, getCurrentInstance, defineAsyncComponent, unref, provide, shallowReactive, createElementBlock, ref, Suspense, Fragment, useSSRContext, createApp, mergeProps, withCtx, createTextVNode, toRef, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, getCurrentScope, nextTick } from 'vue';
-import { p as parseQuery, c as createError$1, o as hasProtocol, m as joinURL, w as withQuery, q as withTrailingSlash, t as withoutTrailingSlash, v as isScriptProtocol, x as getContext, y as sanitizeStatusCode, $ as $fetch, z as createHooks, A as executeAsync, B as toRouteMatcher, C as createRouter$1, D as defu } from '../nitro/nitro.mjs';
+import { p as parseQuery, e as createError$1, q as hasProtocol, n as joinURL, w as withQuery, t as withTrailingSlash, v as withoutTrailingSlash, x as isScriptProtocol, y as getContext, z as sanitizeStatusCode, $ as $fetch, A as createHooks, B as executeAsync, C as toRouteMatcher, D as createRouter$1, E as defu } from '../nitro/nitro.mjs';
 import { b as baseURL } from '../routes/renderer.mjs';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderSuspense, ssrRenderVNode } from 'vue/server-renderer';
@@ -422,7 +422,7 @@ const _routes = [
   {
     name: "test-ssr",
     path: "/test-ssr",
-    component: () => import('./test-ssr-jhN51iDf.mjs')
+    component: () => import('./test-ssr-DB7B-KSg.mjs')
   },
   {
     name: "dashboard",

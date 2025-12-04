@@ -37,7 +37,17 @@ const { data, pending, error, refresh } = await useFetch('/api/time', {
     timezone: '' 
   })
 })
-console.log(data.value, pending.value, error.value)
+
+const { data: testData } = await useFetch('/api/query-test?name=张三&age=25&active=true', {
+  server: true,
+  key: 'test-data',
+  default: () => ({
+    name: '',
+    age: 0,
+    active: false
+  })
+})
+console.log('query-test ---->', testData.value)
 </script>
 
 <style scoped>
