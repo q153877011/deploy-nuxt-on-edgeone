@@ -387,7 +387,7 @@ const _routes = [
   {
     name: "auth",
     path: "/auth",
-    component: () => import('./auth-CB8MvoUS.mjs')
+    component: () => import('./auth-CuG7h3ip.mjs')
   },
   {
     name: "about",
@@ -405,14 +405,9 @@ const _routes = [
     component: () => import('./stream-BgfSWS2r.mjs')
   },
   {
-    name: "id",
-    path: "/:id(.*)*",
-    component: () => import('./_...id_-GUa8RNDN.mjs')
-  },
-  {
     name: "test-isr",
     path: "/test-isr",
-    component: () => import('./test-isr-CrRZ2kjl.mjs')
+    component: () => import('./test-isr-I70aiYew.mjs')
   },
   {
     name: "test-ssg",
@@ -422,12 +417,12 @@ const _routes = [
   {
     name: "test-ssr",
     path: "/test-ssr",
-    component: () => import('./test-ssr-ChVx5-9U.mjs')
+    component: () => import('./test-ssr-B3ss7a6i.mjs')
   },
   {
     name: "dashboard",
     path: "/dashboard",
-    component: () => import('./dashboard-B6KIV2mp.mjs')
+    component: () => import('./dashboard-D5RWlv6f.mjs')
   },
   {
     name: "test-id",
@@ -438,6 +433,11 @@ const _routes = [
     name: "posts-id",
     path: "/posts/:id()",
     component: () => import('./_id_-ClOm1ByL.mjs')
+  },
+  {
+    name: "complex-ssr",
+    path: "/complex-ssr",
+    component: () => import('./complex-ssr-DYrF5rdy.mjs')
   },
   {
     name: "cookies-ssr",
@@ -1476,5 +1476,5 @@ let entry;
 }
 const entry_default = (ssrContext) => entry(ssrContext);
 
-export { _export_sfc as _, __nuxt_component_0 as a, useNuxtApp as b, asyncDataDefaults as c, createError as d, entry_default as default, useRequestFetch as e, fetchDefaults as f, useRequestEvent as g, useRoute as u };
+export { _export_sfc as _, __nuxt_component_0 as a, useRequestFetch as b, useNuxtApp as c, useRequestEvent as d, entry_default as default, asyncDataDefaults as e, fetchDefaults as f, createError as g, useRoute as u };
 //# sourceMappingURL=server.mjs.map
