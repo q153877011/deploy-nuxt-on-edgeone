@@ -10,6 +10,9 @@ srcDir: 'app',
     },
     '/test/:id': {
       prerender: true
+    },
+    '/test-ssg': {
+      prerender: true
     }
   },
   devtools: { enabled: true },

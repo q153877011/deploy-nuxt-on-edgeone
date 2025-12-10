@@ -1,6 +1,6 @@
 <template>
   <section style="padding: 24px;">
-    <h1>SSR 示例页面</h1>
+    <h1>Nuxt SSR 示例页面</h1>
     
     <!-- 使用 ClientOnly 包装可能在服务端和客户端不一致的内容 -->
     <ClientOnly>

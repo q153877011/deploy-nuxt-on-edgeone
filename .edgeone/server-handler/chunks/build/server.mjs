@@ -405,6 +405,11 @@ const _routes = [
     component: () => import('./stream-BgfSWS2r.mjs')
   },
   {
+    name: "all",
+    path: "/:all(.*)*",
+    component: () => import('./_...all_-B3ar1jtW.mjs')
+  },
+  {
     name: "test-isr",
     path: "/test-isr",
     component: () => import('./test-isr-I70aiYew.mjs')

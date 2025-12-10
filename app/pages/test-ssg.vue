@@ -1,6 +1,6 @@
 <template>
     <section>
-      <p>test prerender page!!!</p>
+      <p>Nuxt SSG Page</p>
     </section>
 </template>
   
