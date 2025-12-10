@@ -405,11 +405,6 @@ const _routes = [
     component: () => import('./stream-BgfSWS2r.mjs')
   },
   {
-    name: "all",
-    path: "/:all(.*)*",
-    component: () => import('./_...all_-B3ar1jtW.mjs')
-  },
-  {
     name: "test-isr",
     path: "/test-isr",
     component: () => import('./test-isr-I70aiYew.mjs')
@@ -417,12 +412,12 @@ const _routes = [
   {
     name: "test-ssg",
     path: "/test-ssg",
-    component: () => import('./test-ssg-Byv5YRdc.mjs')
+    component: () => import('./test-ssg-CGHqTOFB.mjs')
   },
   {
     name: "test-ssr",
     path: "/test-ssr",
-    component: () => import('./test-ssr-B3ss7a6i.mjs')
+    component: () => import('./test-ssr-CA8pGdPY.mjs')
   },
   {
     name: "dashboard",

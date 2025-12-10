@@ -4,7 +4,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "C53yRqQs.js",
+    "file": "DTkK67R7.js",
     "name": "entry",
     "src": "../node_modules/nuxt/dist/app/entry.js",
     "isEntry": true,
@@ -84,19 +84,6 @@ const client_manifest = {
     "resourceType": "style",
     "prefetch": true,
     "preload": true
-  },
-  "pages/[...all].vue": {
-    "resourceType": "script",
-    "module": true,
-    "prefetch": true,
-    "preload": true,
-    "file": "D-IL4YnL.js",
-    "name": "_...all_",
-    "src": "pages/[...all].vue",
-    "isDynamicEntry": true,
-    "imports": [
-      "../node_modules/nuxt/dist/app/entry.js"
-    ]
   },
   "pages/about.vue": {
     "resourceType": "script",
@@ -277,7 +264,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "9C0iYU_e.js",
+    "file": "Bxya13iq.js",
     "name": "test-ssg",
     "src": "pages/test-ssg.vue",
     "isDynamicEntry": true,
@@ -290,7 +277,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "Dw6cuzyR.js",
+    "file": "BaqswtCi.js",
     "name": "test-ssr",
     "src": "pages/test-ssr.vue",
     "isDynamicEntry": true,
@@ -302,8 +289,8 @@ const client_manifest = {
     ],
     "css": []
   },
-  "test-ssr.CGYmVbfX.css": {
-    "file": "test-ssr.CGYmVbfX.css",
+  "test-ssr.C6Pna4V5.css": {
+    "file": "test-ssr.C6Pna4V5.css",
     "resourceType": "style",
     "prefetch": true,
     "preload": true
