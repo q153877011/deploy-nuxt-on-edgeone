@@ -818,6 +818,11 @@ const _routes = [
     component: () => import('./cookies-ssr-CMZPjFCv.mjs')
   },
   {
+    name: "tencentcloud-images",
+    path: "/tencentcloud-images",
+    component: () => import('./tencentcloud-images-RpTpZJK3.mjs')
+  },
+  {
     name: "test-platform-middleware",
     path: "/test-platform-middleware",
     component: () => import('./test-platform-middleware-BJWHqpeU.mjs')
@@ -1193,7 +1198,7 @@ const plugins = [
   prerender_server_81HKXkyIu_2tGVwkJ_5m6cLencLpKR_m1haJPeSWEyQ
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-BpiME9eB.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-DxRP-rmD.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",

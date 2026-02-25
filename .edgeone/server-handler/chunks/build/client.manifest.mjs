@@ -4,7 +4,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "s7-fggtu.js",
+    "file": "CPoylnj5.js",
     "name": "entry",
     "src": "../node_modules/.pnpm/nuxt@4.1.3_@netlify+blobs@9.1.2_@parcel+watcher@2.5.4_@types+node@24.10.7_@vercel+blob@_5981d3a560f7bf75af980ce229a65706/node_modules/nuxt/dist/app/entry.js",
     "isEntry": true,
@@ -70,7 +70,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "4UZyUqYl.js",
+    "file": "DqnYtcSH.js",
     "name": "default",
     "src": "layouts/default.vue",
     "isDynamicEntry": true,
@@ -79,8 +79,8 @@ const client_manifest = {
     ],
     "css": []
   },
-  "default.DBuZju5J.css": {
-    "file": "default.DBuZju5J.css",
+  "default.W5bhBMuX.css": {
+    "file": "default.W5bhBMuX.css",
     "resourceType": "style",
     "prefetch": true,
     "preload": true
@@ -245,6 +245,26 @@ const client_manifest = {
   },
   "stream.Cbvw5wZn.css": {
     "file": "stream.Cbvw5wZn.css",
+    "resourceType": "style",
+    "prefetch": true,
+    "preload": true
+  },
+  "pages/tencentcloud-images.vue": {
+    "resourceType": "script",
+    "module": true,
+    "prefetch": true,
+    "preload": true,
+    "file": "DDSZjR8t.js",
+    "name": "tencentcloud-images",
+    "src": "pages/tencentcloud-images.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "../node_modules/.pnpm/nuxt@4.1.3_@netlify+blobs@9.1.2_@parcel+watcher@2.5.4_@types+node@24.10.7_@vercel+blob@_5981d3a560f7bf75af980ce229a65706/node_modules/nuxt/dist/app/entry.js"
+    ],
+    "css": []
+  },
+  "tencentcloud-images.DGinedlc.css": {
+    "file": "tencentcloud-images.DGinedlc.css",
     "resourceType": "style",
     "prefetch": true,
     "preload": true
