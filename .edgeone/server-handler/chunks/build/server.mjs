@@ -1,10 +1,10 @@
 import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, hasInjectionContext, inject, computed, getCurrentInstance, defineAsyncComponent, unref, provide, shallowReactive, createElementBlock, ref, Suspense, Fragment, useSSRContext, createApp, mergeProps, withCtx, createTextVNode, toRef, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, getCurrentScope, nextTick } from 'vue';
-import { p as parseQuery, e as createError$1, q as hasProtocol, n as joinURL, w as withQuery, t as withTrailingSlash, v as withoutTrailingSlash, x as isScriptProtocol, y as getContext, z as sanitizeStatusCode, $ as $fetch, A as createHooks, B as executeAsync, C as toRouteMatcher, D as createRouter$1, E as defu } from '../nitro/nitro.mjs';
+import http from 'node:http';
+import https from 'node:https';
+import { w as withBase, q as destr, t as withQuery, v as i, x as s, y as l, z as parseQuery, A as getRequestHeaders, l as createError$1, B as hasProtocol, o as joinURL, C as withQuery$1, D as withTrailingSlash, E as withoutTrailingSlash, F as isScriptProtocol, G as getContext, H as sanitizeStatusCode, I as createHooks, J as executeAsync, K as toRouteMatcher, L as createRouter$1, M as defu } from '../nitro/nitro.mjs';
 import { b as baseURL } from '../routes/renderer.mjs';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
 import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderSuspense, ssrRenderVNode } from 'vue/server-renderer';
-import 'node:http';
-import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
@@ -15,6 +15,374 @@ import 'vue-bundle-renderer/runtime';
 import 'unhead/server';
 import 'devalue';
 import 'unhead/utils';
+
+class FetchError extends Error {
+  constructor(message, opts) {
+    super(message, opts);
+    this.name = "FetchError";
+    if (opts?.cause && !this.cause) {
+      this.cause = opts.cause;
+    }
+  }
+}
+function createFetchError(ctx) {
+  const errorMessage = ctx.error?.message || ctx.error?.toString() || "";
+  const method = ctx.request?.method || ctx.options?.method || "GET";
+  const url = ctx.request?.url || String(ctx.request) || "/";
+  const requestStr = `[${method}] ${JSON.stringify(url)}`;
+  const statusStr = ctx.response ? `${ctx.response.status} ${ctx.response.statusText}` : "<no response>";
+  const message = `${requestStr}: ${statusStr}${errorMessage ? ` ${errorMessage}` : ""}`;
+  const fetchError = new FetchError(
+    message,
+    ctx.error ? { cause: ctx.error } : void 0
+  );
+  for (const key of ["request", "options", "response"]) {
+    Object.defineProperty(fetchError, key, {
+      get() {
+        return ctx[key];
+      }
+    });
+  }
+  for (const [key, refKey] of [
+    ["data", "_data"],
+    ["status", "status"],
+    ["statusCode", "status"],
+    ["statusText", "statusText"],
+    ["statusMessage", "statusText"]
+  ]) {
+    Object.defineProperty(fetchError, key, {
+      get() {
+        return ctx.response && ctx.response[refKey];
+      }
+    });
+  }
+  return fetchError;
+}
+
+const payloadMethods = new Set(
+  Object.freeze(["PATCH", "POST", "PUT", "DELETE"])
+);
+function isPayloadMethod(method = "GET") {
+  return payloadMethods.has(method.toUpperCase());
+}
+function isJSONSerializable(value) {
+  if (value === void 0) {
+    return false;
+  }
+  const t = typeof value;
+  if (t === "string" || t === "number" || t === "boolean" || t === null) {
+    return true;
+  }
+  if (t !== "object") {
+    return false;
+  }
+  if (Array.isArray(value)) {
+    return true;
+  }
+  if (value.buffer) {
+    return false;
+  }
+  if (value instanceof FormData || value instanceof URLSearchParams) {
+    return false;
+  }
+  return value.constructor && value.constructor.name === "Object" || typeof value.toJSON === "function";
+}
+const textTypes = /* @__PURE__ */ new Set([
+  "image/svg",
+  "application/xml",
+  "application/xhtml",
+  "application/html"
+]);
+const JSON_RE = /^application\/(?:[\w!#$%&*.^`~-]*\+)?json(;.+)?$/i;
+function detectResponseType(_contentType = "") {
+  if (!_contentType) {
+    return "json";
+  }
+  const contentType = _contentType.split(";").shift() || "";
+  if (JSON_RE.test(contentType)) {
+    return "json";
+  }
+  if (contentType === "text/event-stream") {
+    return "stream";
+  }
+  if (textTypes.has(contentType) || contentType.startsWith("text/")) {
+    return "text";
+  }
+  return "blob";
+}
+function resolveFetchOptions(request, input, defaults, Headers) {
+  const headers = mergeHeaders(
+    input?.headers ?? request?.headers,
+    defaults?.headers,
+    Headers
+  );
+  let query;
+  if (defaults?.query || defaults?.params || input?.params || input?.query) {
+    query = {
+      ...defaults?.params,
+      ...defaults?.query,
+      ...input?.params,
+      ...input?.query
+    };
+  }
+  return {
+    ...defaults,
+    ...input,
+    query,
+    params: query,
+    headers
+  };
+}
+function mergeHeaders(input, defaults, Headers) {
+  if (!defaults) {
+    return new Headers(input);
+  }
+  const headers = new Headers(defaults);
+  if (input) {
+    for (const [key, value] of Symbol.iterator in input || Array.isArray(input) ? input : new Headers(input)) {
+      headers.set(key, value);
+    }
+  }
+  return headers;
+}
+async function callHooks(context, hooks) {
+  if (hooks) {
+    if (Array.isArray(hooks)) {
+      for (const hook of hooks) {
+        await hook(context);
+      }
+    } else {
+      await hooks(context);
+    }
+  }
+}
+
+const retryStatusCodes = /* @__PURE__ */ new Set([
+  408,
+  // Request Timeout
+  409,
+  // Conflict
+  425,
+  // Too Early (Experimental)
+  429,
+  // Too Many Requests
+  500,
+  // Internal Server Error
+  502,
+  // Bad Gateway
+  503,
+  // Service Unavailable
+  504
+  // Gateway Timeout
+]);
+const nullBodyResponses = /* @__PURE__ */ new Set([101, 204, 205, 304]);
+function createFetch(globalOptions = {}) {
+  const {
+    fetch = globalThis.fetch,
+    Headers = globalThis.Headers,
+    AbortController = globalThis.AbortController
+  } = globalOptions;
+  async function onError(context) {
+    const isAbort = context.error && context.error.name === "AbortError" && !context.options.timeout || false;
+    if (context.options.retry !== false && !isAbort) {
+      let retries;
+      if (typeof context.options.retry === "number") {
+        retries = context.options.retry;
+      } else {
+        retries = isPayloadMethod(context.options.method) ? 0 : 1;
+      }
+      const responseCode = context.response && context.response.status || 500;
+      if (retries > 0 && (Array.isArray(context.options.retryStatusCodes) ? context.options.retryStatusCodes.includes(responseCode) : retryStatusCodes.has(responseCode))) {
+        const retryDelay = typeof context.options.retryDelay === "function" ? context.options.retryDelay(context) : context.options.retryDelay || 0;
+        if (retryDelay > 0) {
+          await new Promise((resolve) => setTimeout(resolve, retryDelay));
+        }
+        return $fetchRaw(context.request, {
+          ...context.options,
+          retry: retries - 1
+        });
+      }
+    }
+    const error = createFetchError(context);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(error, $fetchRaw);
+    }
+    throw error;
+  }
+  const $fetchRaw = async function $fetchRaw2(_request, _options = {}) {
+    const context = {
+      request: _request,
+      options: resolveFetchOptions(
+        _request,
+        _options,
+        globalOptions.defaults,
+        Headers
+      ),
+      response: void 0,
+      error: void 0
+    };
+    if (context.options.method) {
+      context.options.method = context.options.method.toUpperCase();
+    }
+    if (context.options.onRequest) {
+      await callHooks(context, context.options.onRequest);
+      if (!(context.options.headers instanceof Headers)) {
+        context.options.headers = new Headers(
+          context.options.headers || {}
+          /* compat */
+        );
+      }
+    }
+    if (typeof context.request === "string") {
+      if (context.options.baseURL) {
+        context.request = withBase(context.request, context.options.baseURL);
+      }
+      if (context.options.query) {
+        context.request = withQuery(context.request, context.options.query);
+        delete context.options.query;
+      }
+      if ("query" in context.options) {
+        delete context.options.query;
+      }
+      if ("params" in context.options) {
+        delete context.options.params;
+      }
+    }
+    if (context.options.body && isPayloadMethod(context.options.method)) {
+      if (isJSONSerializable(context.options.body)) {
+        const contentType = context.options.headers.get("content-type");
+        if (typeof context.options.body !== "string") {
+          context.options.body = contentType === "application/x-www-form-urlencoded" ? new URLSearchParams(
+            context.options.body
+          ).toString() : JSON.stringify(context.options.body);
+        }
+        if (!contentType) {
+          context.options.headers.set("content-type", "application/json");
+        }
+        if (!context.options.headers.has("accept")) {
+          context.options.headers.set("accept", "application/json");
+        }
+      } else if (
+        // ReadableStream Body
+        "pipeTo" in context.options.body && typeof context.options.body.pipeTo === "function" || // Node.js Stream Body
+        typeof context.options.body.pipe === "function"
+      ) {
+        if (!("duplex" in context.options)) {
+          context.options.duplex = "half";
+        }
+      }
+    }
+    let abortTimeout;
+    if (!context.options.signal && context.options.timeout) {
+      const controller = new AbortController();
+      abortTimeout = setTimeout(() => {
+        const error = new Error(
+          "[TimeoutError]: The operation was aborted due to timeout"
+        );
+        error.name = "TimeoutError";
+        error.code = 23;
+        controller.abort(error);
+      }, context.options.timeout);
+      context.options.signal = controller.signal;
+    }
+    try {
+      context.response = await fetch(
+        context.request,
+        context.options
+      );
+    } catch (error) {
+      context.error = error;
+      if (context.options.onRequestError) {
+        await callHooks(
+          context,
+          context.options.onRequestError
+        );
+      }
+      return await onError(context);
+    } finally {
+      if (abortTimeout) {
+        clearTimeout(abortTimeout);
+      }
+    }
+    const hasBody = (context.response.body || // https://github.com/unjs/ofetch/issues/324
+    // https://github.com/unjs/ofetch/issues/294
+    // https://github.com/JakeChampion/fetch/issues/1454
+    context.response._bodyInit) && !nullBodyResponses.has(context.response.status) && context.options.method !== "HEAD";
+    if (hasBody) {
+      const responseType = (context.options.parseResponse ? "json" : context.options.responseType) || detectResponseType(context.response.headers.get("content-type") || "");
+      switch (responseType) {
+        case "json": {
+          const data = await context.response.text();
+          const parseFunction = context.options.parseResponse || destr;
+          context.response._data = parseFunction(data);
+          break;
+        }
+        case "stream": {
+          context.response._data = context.response.body || context.response._bodyInit;
+          break;
+        }
+        default: {
+          context.response._data = await context.response[responseType]();
+        }
+      }
+    }
+    if (context.options.onResponse) {
+      await callHooks(
+        context,
+        context.options.onResponse
+      );
+    }
+    if (!context.options.ignoreResponseError && context.response.status >= 400 && context.response.status < 600) {
+      if (context.options.onResponseError) {
+        await callHooks(
+          context,
+          context.options.onResponseError
+        );
+      }
+      return await onError(context);
+    }
+    return context.response;
+  };
+  const $fetch = async function $fetch2(request, options) {
+    const r = await $fetchRaw(request, options);
+    return r._data;
+  };
+  $fetch.raw = $fetchRaw;
+  $fetch.native = (...args) => fetch(...args);
+  $fetch.create = (defaultOptions = {}, customGlobalOptions = {}) => createFetch({
+    ...globalOptions,
+    ...customGlobalOptions,
+    defaults: {
+      ...globalOptions.defaults,
+      ...customGlobalOptions.defaults,
+      ...defaultOptions
+    }
+  });
+  return $fetch;
+}
+
+function createNodeFetch() {
+  const useKeepAlive = JSON.parse(process.env.FETCH_KEEP_ALIVE || "false");
+  if (!useKeepAlive) {
+    return l;
+  }
+  const agentOptions = { keepAlive: true };
+  const httpAgent = new http.Agent(agentOptions);
+  const httpsAgent = new https.Agent(agentOptions);
+  const nodeFetchOptions = {
+    agent(parsedURL) {
+      return parsedURL.protocol === "http:" ? httpAgent : httpsAgent;
+    }
+  };
+  return function nodeFetchWithKeepAlive(input, init) {
+    return l(input, { ...nodeFetchOptions, ...init });
+  };
+}
+const fetch = globalThis.fetch ? (...args) => globalThis.fetch(...args) : createNodeFetch();
+const Headers = globalThis.Headers || s;
+const AbortController = globalThis.AbortController || i;
+const ofetch = createFetch({ fetch, Headers, AbortController });
+const $fetch = ofetch;
 
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch.create({
@@ -239,8 +607,8 @@ function useRuntimeConfig(_event) {
 function defineGetter(obj, key, val) {
   Object.defineProperty(obj, key, { get: () => val });
 }
-const LayoutMetaSymbol = Symbol("layout-meta");
-const PageRouteSymbol = Symbol("route");
+const LayoutMetaSymbol = /* @__PURE__ */ Symbol("layout-meta");
+const PageRouteSymbol = /* @__PURE__ */ Symbol("route");
 globalThis._importMeta_.url.replace(/\/app\/.*$/, "/");
 const useRouter = () => {
   return useNuxtApp()?.$router;
@@ -327,7 +695,7 @@ const navigateTo = (to, options) => {
   return options?.replace ? router.replace(to) : router.push(to);
 };
 function resolveRouteObject(to) {
-  return withQuery(to.path || "", to.query || {}) + (to.hash || "");
+  return withQuery$1(to.path || "", to.query || {}) + (to.hash || "");
 }
 function encodeURL(location2, isExternalHost = false) {
   const url = new URL(location2, "http://localhost");
@@ -362,7 +730,7 @@ const createError = (error) => {
   });
   return nuxtError;
 };
-const unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU = /* @__PURE__ */ defineNuxtPlugin({
+const unhead_kQv1KKs2kekRN4ymgVUCzHWh2v7AgXQcmU8_n4tJk4Y = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:head",
   enforce: "pre",
   setup(nuxtApp) {
@@ -387,62 +755,72 @@ const _routes = [
   {
     name: "auth",
     path: "/auth",
-    component: () => import('./auth-CuG7h3ip.mjs')
+    component: () => import('./auth-D_SpIZID.mjs')
   },
   {
     name: "about",
     path: "/about",
-    component: () => import('./about-BCXJ-JM8.mjs')
+    component: () => import('./about-ZYl3sryA.mjs')
   },
   {
     name: "index",
     path: "/",
-    component: () => import('./index-CB2kdPks.mjs')
+    component: () => import('./index-CNtbuvyi.mjs')
   },
   {
     name: "stream",
     path: "/stream",
-    component: () => import('./stream-BgfSWS2r.mjs')
+    component: () => import('./stream-kLYVjZKg.mjs')
+  },
+  {
+    name: "all",
+    path: "/:all(.*)*",
+    component: () => import('./_...all_-Cjf0plxo.mjs')
   },
   {
     name: "test-isr",
     path: "/test-isr",
-    component: () => import('./test-isr-I70aiYew.mjs')
+    component: () => import('./test-isr-CoirC9BN.mjs')
   },
   {
     name: "test-ssg",
     path: "/test-ssg",
-    component: () => import('./test-ssg-CGHqTOFB.mjs')
+    component: () => import('./test-ssg-CRjUtE27.mjs')
   },
   {
     name: "test-ssr",
     path: "/test-ssr",
-    component: () => import('./test-ssr-CA8pGdPY.mjs')
+    component: () => import('./test-ssr-BpW62J2e.mjs')
   },
   {
     name: "dashboard",
     path: "/dashboard",
-    component: () => import('./dashboard-D5RWlv6f.mjs')
+    component: () => import('./dashboard-BqKKFlIJ.mjs')
   },
   {
     name: "test-id",
     path: "/test/:id()",
-    component: () => import('./_id_-TOrsvr4Y.mjs')
+    component: () => import('./_id_-ChWHgk-8.mjs')
   },
   {
     name: "posts-id",
     path: "/posts/:id()",
-    component: () => import('./_id_-ClOm1ByL.mjs')
+    component: () => import('./_id_-DX-39Pbp.mjs')
   },
   {
     name: "complex-ssr",
     path: "/complex-ssr",
-    component: () => import('./complex-ssr-DYrF5rdy.mjs')
+    component: () => import('./complex-ssr-5wP6EKWb.mjs')
   },
   {
     name: "cookies-ssr",
     path: "/cookies-ssr",
     component: () => import('./cookies-ssr-CMZPjFCv.mjs')
+  },
+  {
+    name: "test-platform-middleware",
+    path: "/test-platform-middleware",
+    component: () => import('./test-platform-middleware-BJWHqpeU.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -777,7 +1155,7 @@ const reducers = [
   ["Ref", (data) => isRef(data) && data.value],
   ["Reactive", (data) => isReactive(data) && toRaw(data)]
 ];
-const revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms = /* @__PURE__ */ defineNuxtPlugin({
+const revive_payload_server_s0QV13r09xL7FGHAT_7UuVbrDLxWSpTbUv5gBGHqNaY = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:revive-payload:server",
   setup() {
     for (const [reducer, fn] of reducers) {
@@ -792,23 +1170,30 @@ function useRequestEvent(nuxtApp) {
   nuxtApp ||= useNuxtApp();
   return nuxtApp.ssrContext?.event;
 }
+function useRequestHeaders(include) {
+  const event = useRequestEvent();
+  const _headers = event ? getRequestHeaders(event) : {};
+  {
+    return _headers;
+  }
+}
 function useRequestFetch() {
   return useRequestEvent()?.$fetch || globalThis.$fetch;
 }
-const prerender_server_sqIxOBipVr4FbVMA9kqWL0wT8FPop6sKAXLVfifsJzk = /* @__PURE__ */ defineNuxtPlugin(async () => {
+const prerender_server_81HKXkyIu_2tGVwkJ_5m6cLencLpKR_m1haJPeSWEyQ = /* @__PURE__ */ defineNuxtPlugin(async () => {
   {
     return;
   }
 });
 const plugins = [
-  unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU,
+  unhead_kQv1KKs2kekRN4ymgVUCzHWh2v7AgXQcmU8_n4tJk4Y,
   plugin,
-  revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms,
+  revive_payload_server_s0QV13r09xL7FGHAT_7UuVbrDLxWSpTbUv5gBGHqNaY,
   components_plugin_4kY4pyzJIYX99vmMAAIorFf3CnAaptHitJgf7JxiED8,
-  prerender_server_sqIxOBipVr4FbVMA9kqWL0wT8FPop6sKAXLVfifsJzk
+  prerender_server_81HKXkyIu_2tGVwkJ_5m6cLencLpKR_m1haJPeSWEyQ
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-BjsE1AEK.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-BpiME9eB.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1056,7 +1441,7 @@ function _sfc_ssrRender(_ctx, _push, _parent, _attrs) {
 const _sfc_setup$2 = _sfc_main$2.setup;
 _sfc_main$2.setup = (props, ctx) => {
   const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../node_modules/nuxt/dist/pages/runtime/app.vue");
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../node_modules/.pnpm/nuxt@4.1.3_@netlify+blobs@9.1.2_@parcel+watcher@2.5.4_@types+node@24.10.7_@vercel+blob@_5981d3a560f7bf75af980ce229a65706/node_modules/nuxt/dist/pages/runtime/app.vue");
   return _sfc_setup$2 ? _sfc_setup$2(props, ctx) : void 0;
 };
 const AppComponent = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["ssrRender", _sfc_ssrRender]]);
@@ -1453,7 +1838,7 @@ const _sfc_main = {
 const _sfc_setup = _sfc_main.setup;
 _sfc_main.setup = (props, ctx) => {
   const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../node_modules/nuxt/dist/app/components/nuxt-root.vue");
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("../node_modules/.pnpm/nuxt@4.1.3_@netlify+blobs@9.1.2_@parcel+watcher@2.5.4_@types+node@24.10.7_@vercel+blob@_5981d3a560f7bf75af980ce229a65706/node_modules/nuxt/dist/app/components/nuxt-root.vue");
   return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
 };
 let entry;
@@ -1476,5 +1861,5 @@ let entry;
 }
 const entry_default = (ssrContext) => entry(ssrContext);
 
-export { _export_sfc as _, __nuxt_component_0 as a, useRequestFetch as b, useNuxtApp as c, useRequestEvent as d, entry_default as default, asyncDataDefaults as e, fetchDefaults as f, createError as g, useRoute as u };
+export { _export_sfc as _, __nuxt_component_0 as a, useRequestFetch as b, useNuxtApp as c, useRequestEvent as d, entry_default as default, useRequestHeaders as e, fetchDefaults as f, asyncDataDefaults as g, createError as h, useRoute as u };
 //# sourceMappingURL=server.mjs.map

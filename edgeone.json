@@ -1,3 +1,5 @@
 {
-    "outputDirectory": "dist"
+    "routesExtend": {
+        "dynamic": ["/icon/avator2.jpg"]
+    }
 }

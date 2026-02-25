@@ -1,6 +1,20 @@
-export default defineNuxtConfig({
-srcDir: 'app',
+const options = {
+  '/about': {
+    prerender: true
+  },
+  '/test-isr': {
+    swr: 5
+  },
+  '/test/:id': {
+    prerender: true
+  },
+  '/test-ssg': {
+    prerender: true
+  }
+}
 
+export default defineNuxtConfig({
+  srcDir: 'app',
   routeRules: {
     '/about': {
       prerender: true
@@ -16,6 +30,14 @@ srcDir: 'app',
     }
   },
   devtools: { enabled: true },
+  nitro: {}
+  // nitro: {
+  //   output: {
+  //     dir: '.edgeone',
+  //     publicDir: '.edgeone/assets',
+  //     serverDir: '.edgeone/server-handler'
+  //   }
+  // },
   // nitro: {
   //   preset: 'node-server',
   //   prerender: {
@@ -27,5 +49,4 @@ srcDir: 'app',
   //     serverDir: '.edgeone/server-handler'
   //   }
   // },
-  nitro: {}
 })

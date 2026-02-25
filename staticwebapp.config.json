@@ -1,0 +1,30 @@
+{
+  "routes": [
+    {
+      "route": "/test-ssg",
+      "rewrite": "/test-ssg/index.html"
+    },
+    {
+      "route": "/test/:id",
+      "rewrite": "/test/:id/index.html"
+    },
+    {
+      "route": "/about",
+      "rewrite": "/about/index.html"
+    },
+    {
+      "route": "/index.html",
+      "redirect": "/"
+    },
+    {
+      "route": "/",
+      "rewrite": "/api/server"
+    }
+  ],
+  "platform": {
+    "apiRuntime": "node:18"
+  },
+  "navigationFallback": {
+    "rewrite": "/api/server"
+  }
+}

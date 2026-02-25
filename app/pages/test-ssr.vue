@@ -47,7 +47,7 @@ const { data: testData } = await useFetch('/api/seconde/query-test?name=张三&a
     active: false
   })
 })
-console.log('query-test ---->', testData.value)
+// console.log('query-test ---->', testData.value)
 </script>
 
 <style scoped>

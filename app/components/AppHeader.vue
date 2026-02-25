@@ -22,17 +22,7 @@
               <span>首页</span>
             </NuxtLink>
           </li>
-          <li class="nav-item">
-            <NuxtLink 
-              to="/about" 
-              class="nav-link" 
-              :class="{ active: $route.path === '/about' }"
-              @click="closeMobileMenu"
-            >
-              <span class="nav-icon">ℹ️</span>
-              <span>关于</span>
-            </NuxtLink>
-          </li>
+          
           <li class="nav-item">
             <NuxtLink 
               to="/stream" 
@@ -90,13 +80,24 @@
           </li>
           <li class="nav-item">
             <NuxtLink 
-              to="/auth" 
+              to="/test-platform-middleware" 
               class="nav-link" 
-              :class="{ active: $route.path === '/auth' }"
+              :class="{ active: $route.path === '/test-platform-middleware' }"
               @click="closeMobileMenu"
             >
               <span class="nav-icon">🔐</span>
-              <span>认证</span>
+              <span>平台中间件</span>
+            </NuxtLink>
+          </li>
+          <li class="nav-item">
+            <NuxtLink 
+              to="/tencentcloud-images" 
+              class="nav-link" 
+              :class="{ active: $route.path === '/tencentcloud-images' }"
+              @click="closeMobileMenu"
+            >
+              <span class="nav-icon">☁️</span>
+              <span>Tencent Cloud图片</span>
             </NuxtLink>
           </li>
         </ul>

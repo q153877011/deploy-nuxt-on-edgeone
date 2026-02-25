@@ -7,20 +7,20 @@ import { resolve as resolve$1, dirname as dirname$1, join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const suspectProtoRx = /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/;
-const suspectConstructorRx = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/;
-const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
-function jsonParseTransform(key, value) {
+const suspectProtoRx$1 = /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/;
+const suspectConstructorRx$1 = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/;
+const JsonSigRx$1 = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
+function jsonParseTransform$1(key, value) {
   if (key === "__proto__" || key === "constructor" && value && typeof value === "object" && "prototype" in value) {
-    warnKeyDropped(key);
+    warnKeyDropped$1(key);
     return;
   }
   return value;
 }
-function warnKeyDropped(key) {
+function warnKeyDropped$1(key) {
   console.warn(`[destr] Dropping "${key}" key to prevent prototype pollution.`);
 }
-function destr(value, options = {}) {
+function destr$1(value, options = {}) {
   if (typeof value !== "string") {
     return value;
   }
@@ -53,18 +53,18 @@ function destr(value, options = {}) {
       }
     }
   }
-  if (!JsonSigRx.test(value)) {
+  if (!JsonSigRx$1.test(value)) {
     if (options.strict) {
       throw new SyntaxError("[destr] Invalid JSON");
     }
     return value;
   }
   try {
-    if (suspectProtoRx.test(value) || suspectConstructorRx.test(value)) {
+    if (suspectProtoRx$1.test(value) || suspectConstructorRx$1.test(value)) {
       if (options.strict) {
         throw new Error("[destr] Possible prototype pollution");
       }
-      return JSON.parse(value, jsonParseTransform);
+      return JSON.parse(value, jsonParseTransform$1);
     }
     return JSON.parse(value);
   } catch (error) {
@@ -75,26 +75,26 @@ function destr(value, options = {}) {
   }
 }
 
-const HASH_RE = /#/g;
-const AMPERSAND_RE = /&/g;
-const SLASH_RE = /\//g;
-const EQUAL_RE = /=/g;
-const PLUS_RE = /\+/g;
-const ENC_CARET_RE = /%5e/gi;
-const ENC_BACKTICK_RE = /%60/gi;
-const ENC_PIPE_RE = /%7c/gi;
-const ENC_SPACE_RE = /%20/gi;
+const HASH_RE$1 = /#/g;
+const AMPERSAND_RE$1 = /&/g;
+const SLASH_RE$1 = /\//g;
+const EQUAL_RE$1 = /=/g;
+const PLUS_RE$1 = /\+/g;
+const ENC_CARET_RE$1 = /%5e/gi;
+const ENC_BACKTICK_RE$1 = /%60/gi;
+const ENC_PIPE_RE$1 = /%7c/gi;
+const ENC_SPACE_RE$1 = /%20/gi;
 const ENC_SLASH_RE = /%2f/gi;
-function encode(text) {
-  return encodeURI("" + text).replace(ENC_PIPE_RE, "|");
+function encode$1(text) {
+  return encodeURI("" + text).replace(ENC_PIPE_RE$1, "|");
 }
-function encodeQueryValue(input) {
-  return encode(typeof input === "string" ? input : JSON.stringify(input)).replace(PLUS_RE, "%2B").replace(ENC_SPACE_RE, "+").replace(HASH_RE, "%23").replace(AMPERSAND_RE, "%26").replace(ENC_BACKTICK_RE, "`").replace(ENC_CARET_RE, "^").replace(SLASH_RE, "%2F");
+function encodeQueryValue$1(input) {
+  return encode$1(typeof input === "string" ? input : JSON.stringify(input)).replace(PLUS_RE$1, "%2B").replace(ENC_SPACE_RE$1, "+").replace(HASH_RE$1, "%23").replace(AMPERSAND_RE$1, "%26").replace(ENC_BACKTICK_RE$1, "`").replace(ENC_CARET_RE$1, "^").replace(SLASH_RE$1, "%2F");
 }
-function encodeQueryKey(text) {
-  return encodeQueryValue(text).replace(EQUAL_RE, "%3D");
+function encodeQueryKey$1(text) {
+  return encodeQueryValue$1(text).replace(EQUAL_RE$1, "%3D");
 }
-function decode$2(text = "") {
+function decode$3(text = "") {
   try {
     return decodeURIComponent("" + text);
   } catch {
@@ -102,16 +102,16 @@ function decode$2(text = "") {
   }
 }
 function decodePath(text) {
-  return decode$2(text.replace(ENC_SLASH_RE, "%252F"));
+  return decode$3(text.replace(ENC_SLASH_RE, "%252F"));
 }
-function decodeQueryKey(text) {
-  return decode$2(text.replace(PLUS_RE, " "));
+function decodeQueryKey$1(text) {
+  return decode$3(text.replace(PLUS_RE$1, " "));
 }
-function decodeQueryValue(text) {
-  return decode$2(text.replace(PLUS_RE, " "));
+function decodeQueryValue$1(text) {
+  return decode$3(text.replace(PLUS_RE$1, " "));
 }
 
-function parseQuery(parametersString = "") {
+function parseQuery$1(parametersString = "") {
   const object = /* @__PURE__ */ Object.create(null);
   if (parametersString[0] === "?") {
     parametersString = parametersString.slice(1);
@@ -121,11 +121,11 @@ function parseQuery(parametersString = "") {
     if (s.length < 2) {
       continue;
     }
-    const key = decodeQueryKey(s[1]);
+    const key = decodeQueryKey$1(s[1]);
     if (key === "__proto__" || key === "constructor") {
       continue;
     }
-    const value = decodeQueryValue(s[2] || "");
+    const value = decodeQueryValue$1(s[2] || "");
     if (object[key] === void 0) {
       object[key] = value;
     } else if (Array.isArray(object[key])) {
@@ -136,53 +136,53 @@ function parseQuery(parametersString = "") {
   }
   return object;
 }
-function encodeQueryItem(key, value) {
+function encodeQueryItem$1(key, value) {
   if (typeof value === "number" || typeof value === "boolean") {
     value = String(value);
   }
   if (!value) {
-    return encodeQueryKey(key);
+    return encodeQueryKey$1(key);
   }
   if (Array.isArray(value)) {
     return value.map(
-      (_value) => `${encodeQueryKey(key)}=${encodeQueryValue(_value)}`
+      (_value) => `${encodeQueryKey$1(key)}=${encodeQueryValue$1(_value)}`
     ).join("&");
   }
-  return `${encodeQueryKey(key)}=${encodeQueryValue(value)}`;
+  return `${encodeQueryKey$1(key)}=${encodeQueryValue$1(value)}`;
 }
-function stringifyQuery(query) {
-  return Object.keys(query).filter((k) => query[k] !== void 0).map((k) => encodeQueryItem(k, query[k])).filter(Boolean).join("&");
+function stringifyQuery$1(query) {
+  return Object.keys(query).filter((k) => query[k] !== void 0).map((k) => encodeQueryItem$1(k, query[k])).filter(Boolean).join("&");
 }
 
-const PROTOCOL_STRICT_REGEX = /^[\s\w\0+.-]{2,}:([/\\]{1,2})/;
-const PROTOCOL_REGEX = /^[\s\w\0+.-]{2,}:([/\\]{2})?/;
-const PROTOCOL_RELATIVE_REGEX = /^([/\\]\s*){2,}[^/\\]/;
+const PROTOCOL_STRICT_REGEX$1 = /^[\s\w\0+.-]{2,}:([/\\]{1,2})/;
+const PROTOCOL_REGEX$1 = /^[\s\w\0+.-]{2,}:([/\\]{2})?/;
+const PROTOCOL_RELATIVE_REGEX$1 = /^([/\\]\s*){2,}[^/\\]/;
 const PROTOCOL_SCRIPT_RE = /^[\s\0]*(blob|data|javascript|vbscript):$/i;
 const TRAILING_SLASH_RE = /\/$|\/\?|\/#/;
-const JOIN_LEADING_SLASH_RE = /^\.?\//;
-function hasProtocol(inputString, opts = {}) {
+const JOIN_LEADING_SLASH_RE$1 = /^\.?\//;
+function hasProtocol$1(inputString, opts = {}) {
   if (typeof opts === "boolean") {
     opts = { acceptRelative: opts };
   }
   if (opts.strict) {
-    return PROTOCOL_STRICT_REGEX.test(inputString);
+    return PROTOCOL_STRICT_REGEX$1.test(inputString);
   }
-  return PROTOCOL_REGEX.test(inputString) || (opts.acceptRelative ? PROTOCOL_RELATIVE_REGEX.test(inputString) : false);
+  return PROTOCOL_REGEX$1.test(inputString) || (opts.acceptRelative ? PROTOCOL_RELATIVE_REGEX$1.test(inputString) : false);
 }
 function isScriptProtocol(protocol) {
   return !!protocol && PROTOCOL_SCRIPT_RE.test(protocol);
 }
-function hasTrailingSlash(input = "", respectQueryAndFragment) {
+function hasTrailingSlash$1(input = "", respectQueryAndFragment) {
   if (!respectQueryAndFragment) {
     return input.endsWith("/");
   }
   return TRAILING_SLASH_RE.test(input);
 }
-function withoutTrailingSlash(input = "", respectQueryAndFragment) {
+function withoutTrailingSlash$1(input = "", respectQueryAndFragment) {
   if (!respectQueryAndFragment) {
-    return (hasTrailingSlash(input) ? input.slice(0, -1) : input) || "/";
+    return (hasTrailingSlash$1(input) ? input.slice(0, -1) : input) || "/";
   }
-  if (!hasTrailingSlash(input, true)) {
+  if (!hasTrailingSlash$1(input, true)) {
     return input || "/";
   }
   let path = input;
@@ -196,11 +196,11 @@ function withoutTrailingSlash(input = "", respectQueryAndFragment) {
   const cleanPath = s0.endsWith("/") ? s0.slice(0, -1) : s0;
   return (cleanPath || "/") + (s.length > 0 ? `?${s.join("?")}` : "") + fragment;
 }
-function withTrailingSlash(input = "", respectQueryAndFragment) {
+function withTrailingSlash$1(input = "", respectQueryAndFragment) {
   if (!respectQueryAndFragment) {
     return input.endsWith("/") ? input : input + "/";
   }
-  if (hasTrailingSlash(input, true)) {
+  if (hasTrailingSlash$1(input, true)) {
     return input || "/";
   }
   let path = input;
@@ -222,48 +222,48 @@ function hasLeadingSlash(input = "") {
 function withLeadingSlash(input = "") {
   return hasLeadingSlash(input) ? input : "/" + input;
 }
-function withBase(input, base) {
-  if (isEmptyURL(base) || hasProtocol(input)) {
+function withBase$1(input, base) {
+  if (isEmptyURL$1(base) || hasProtocol$1(input)) {
     return input;
   }
-  const _base = withoutTrailingSlash(base);
+  const _base = withoutTrailingSlash$1(base);
   if (input.startsWith(_base)) {
     return input;
   }
-  return joinURL(_base, input);
+  return joinURL$1(_base, input);
 }
 function withoutBase(input, base) {
-  if (isEmptyURL(base)) {
+  if (isEmptyURL$1(base)) {
     return input;
   }
-  const _base = withoutTrailingSlash(base);
+  const _base = withoutTrailingSlash$1(base);
   if (!input.startsWith(_base)) {
     return input;
   }
   const trimmed = input.slice(_base.length);
   return trimmed[0] === "/" ? trimmed : "/" + trimmed;
 }
-function withQuery(input, query) {
-  const parsed = parseURL(input);
-  const mergedQuery = { ...parseQuery(parsed.search), ...query };
-  parsed.search = stringifyQuery(mergedQuery);
-  return stringifyParsedURL(parsed);
+function withQuery$1(input, query) {
+  const parsed = parseURL$1(input);
+  const mergedQuery = { ...parseQuery$1(parsed.search), ...query };
+  parsed.search = stringifyQuery$1(mergedQuery);
+  return stringifyParsedURL$1(parsed);
 }
-function getQuery$1(input) {
-  return parseQuery(parseURL(input).search);
+function getQuery$3(input) {
+  return parseQuery$1(parseURL$1(input).search);
 }
-function isEmptyURL(url) {
+function isEmptyURL$1(url) {
   return !url || url === "/";
 }
-function isNonEmptyURL(url) {
+function isNonEmptyURL$1(url) {
   return url && url !== "/";
 }
-function joinURL(base, ...input) {
+function joinURL$1(base, ...input) {
   let url = base || "";
-  for (const segment of input.filter((url2) => isNonEmptyURL(url2))) {
+  for (const segment of input.filter((url2) => isNonEmptyURL$1(url2))) {
     if (url) {
-      const _segment = segment.replace(JOIN_LEADING_SLASH_RE, "");
-      url = withTrailingSlash(url) + _segment;
+      const _segment = segment.replace(JOIN_LEADING_SLASH_RE$1, "");
+      url = withTrailingSlash$1(url) + _segment;
     } else {
       url = segment;
     }
@@ -284,7 +284,7 @@ function joinRelativeURL(..._input) {
         continue;
       }
       if (s === "..") {
-        if (segments.length === 1 && hasProtocol(segments[0])) {
+        if (segments.length === 1 && hasProtocol$1(segments[0])) {
           continue;
         }
         segments.pop();
@@ -315,8 +315,8 @@ function joinRelativeURL(..._input) {
   return url;
 }
 
-const protocolRelative = Symbol.for("ufo:protocolRelative");
-function parseURL(input = "", defaultProto) {
+const protocolRelative$1 = Symbol.for("ufo:protocolRelative");
+function parseURL$1(input = "", defaultProto) {
   const _specialProtoMatch = input.match(
     /^[\s\0]*(blob:|data:|javascript:|vbscript:)(.*)/i
   );
@@ -332,15 +332,15 @@ function parseURL(input = "", defaultProto) {
       hash: ""
     };
   }
-  if (!hasProtocol(input, { acceptRelative: true })) {
-    return parsePath(input);
+  if (!hasProtocol$1(input, { acceptRelative: true })) {
+    return parsePath$1(input);
   }
   const [, protocol = "", auth, hostAndPath = ""] = input.replace(/\\/g, "/").match(/^[\s\0]*([\w+.-]{2,}:)?\/\/([^/@]+@)?(.*)/) || [];
   let [, host = "", path = ""] = hostAndPath.match(/([^#/?]*)(.*)?/) || [];
   if (protocol === "file:") {
     path = path.replace(/\/(?=[A-Za-z]:)/, "");
   }
-  const { pathname, search, hash } = parsePath(path);
+  const { pathname, search, hash } = parsePath$1(path);
   return {
     protocol: protocol.toLowerCase(),
     auth: auth ? auth.slice(0, Math.max(0, auth.length - 1)) : "",
@@ -348,10 +348,10 @@ function parseURL(input = "", defaultProto) {
     pathname,
     search,
     hash,
-    [protocolRelative]: !protocol
+    [protocolRelative$1]: !protocol
   };
 }
-function parsePath(input = "") {
+function parsePath$1(input = "") {
   const [pathname = "", search = "", hash = ""] = (input.match(/([^#?]*)(\?[^#]*)?(#.*)?/) || []).splice(1);
   return {
     pathname,
@@ -359,13 +359,13 @@ function parsePath(input = "") {
     hash
   };
 }
-function stringifyParsedURL(parsed) {
+function stringifyParsedURL$1(parsed) {
   const pathname = parsed.pathname || "";
   const search = parsed.search ? (parsed.search.startsWith("?") ? "" : "?") + parsed.search : "";
   const hash = parsed.hash || "";
   const auth = parsed.auth ? parsed.auth + "@" : "";
   const host = parsed.host || "";
-  const proto = parsed.protocol || parsed[protocolRelative] ? (parsed.protocol || "") + "//" : "";
+  const proto = parsed.protocol || parsed[protocolRelative$1] ? (parsed.protocol || "") + "//" : "";
   return proto + auth + host + pathname + search + hash;
 }
 
@@ -375,7 +375,7 @@ function parse$1(str, options) {
   }
   const obj = {};
   const opt = {};
-  const dec = opt.decode || decode$1;
+  const dec = opt.decode || decode$2;
   let index = 0;
   while (index < str.length) {
     const eqIdx = str.indexOf("=", index);
@@ -405,7 +405,7 @@ function parse$1(str, options) {
   }
   return obj;
 }
-function decode$1(str) {
+function decode$2(str) {
   return str.includes("%") ? decodeURIComponent(str) : str;
 }
 function tryDecode$1(str, decode2) {
@@ -416,18 +416,18 @@ function tryDecode$1(str, decode2) {
   }
 }
 
-const fieldContentRegExp = /^[\u0009\u0020-\u007E\u0080-\u00FF]+$/;
-function serialize$2(name, value, options) {
+const fieldContentRegExp$1 = /^[\u0009\u0020-\u007E\u0080-\u00FF]+$/;
+function serialize$3(name, value, options) {
   const opt = options || {};
   const enc = opt.encode || encodeURIComponent;
   if (typeof enc !== "function") {
     throw new TypeError("option encode is invalid");
   }
-  if (!fieldContentRegExp.test(name)) {
+  if (!fieldContentRegExp$1.test(name)) {
     throw new TypeError("argument name is invalid");
   }
   const encodedValue = enc(value);
-  if (encodedValue && !fieldContentRegExp.test(encodedValue)) {
+  if (encodedValue && !fieldContentRegExp$1.test(encodedValue)) {
     throw new TypeError("argument val is invalid");
   }
   let str = name + "=" + encodedValue;
@@ -439,19 +439,19 @@ function serialize$2(name, value, options) {
     str += "; Max-Age=" + Math.floor(maxAge);
   }
   if (opt.domain) {
-    if (!fieldContentRegExp.test(opt.domain)) {
+    if (!fieldContentRegExp$1.test(opt.domain)) {
       throw new TypeError("option domain is invalid");
     }
     str += "; Domain=" + opt.domain;
   }
   if (opt.path) {
-    if (!fieldContentRegExp.test(opt.path)) {
+    if (!fieldContentRegExp$1.test(opt.path)) {
       throw new TypeError("option path is invalid");
     }
     str += "; Path=" + opt.path;
   }
   if (opt.expires) {
-    if (!isDate(opt.expires) || Number.isNaN(opt.expires.valueOf())) {
+    if (!isDate$1(opt.expires) || Number.isNaN(opt.expires.valueOf())) {
       throw new TypeError("option expires is invalid");
     }
     str += "; Expires=" + opt.expires.toUTCString();
@@ -511,14 +511,14 @@ function serialize$2(name, value, options) {
   }
   return str;
 }
-function isDate(val) {
+function isDate$1(val) {
   return Object.prototype.toString.call(val) === "[object Date]" || val instanceof Date;
 }
 
-function parseSetCookie(setCookieValue, options) {
+function parseSetCookie$1(setCookieValue, options) {
   const parts = (setCookieValue || "").split(";").filter((str) => typeof str === "string" && !!str.trim());
   const nameValuePairStr = parts.shift() || "";
-  const parsed = _parseNameValuePair(nameValuePairStr);
+  const parsed = _parseNameValuePair$1(nameValuePairStr);
   const name = parsed.name;
   let value = parsed.value;
   try {
@@ -561,7 +561,7 @@ function parseSetCookie(setCookieValue, options) {
   }
   return cookie;
 }
-function _parseNameValuePair(nameValuePairStr) {
+function _parseNameValuePair$1(nameValuePairStr) {
   let name = "";
   let value = "";
   const nameValueArr = nameValuePairStr.split("=");
@@ -803,7 +803,7 @@ function _routerNodeToTable(initialPath, initialNode) {
   return table;
 }
 
-function isPlainObject(value) {
+function isPlainObject$1(value) {
   if (value === null || typeof value !== "object") {
     return false;
   }
@@ -820,9 +820,9 @@ function isPlainObject(value) {
   return true;
 }
 
-function _defu(baseObject, defaults, namespace = ".", merger) {
-  if (!isPlainObject(defaults)) {
-    return _defu(baseObject, {}, namespace, merger);
+function _defu$1(baseObject, defaults, namespace = ".", merger) {
+  if (!isPlainObject$1(defaults)) {
+    return _defu$1(baseObject, {}, namespace, merger);
   }
   const object = Object.assign({}, defaults);
   for (const key in baseObject) {
@@ -838,8 +838,8 @@ function _defu(baseObject, defaults, namespace = ".", merger) {
     }
     if (Array.isArray(value) && Array.isArray(object[key])) {
       object[key] = [...value, ...object[key]];
-    } else if (isPlainObject(value) && isPlainObject(object[key])) {
-      object[key] = _defu(
+    } else if (isPlainObject$1(value) && isPlainObject$1(object[key])) {
+      object[key] = _defu$1(
         value,
         object[key],
         (namespace ? `${namespace}.` : "") + key.toString(),
@@ -851,23 +851,17 @@ function _defu(baseObject, defaults, namespace = ".", merger) {
   }
   return object;
 }
-function createDefu(merger) {
+function createDefu$1(merger) {
   return (...arguments_) => (
     // eslint-disable-next-line unicorn/no-array-reduce
-    arguments_.reduce((p, c) => _defu(p, c, "", merger), {})
+    arguments_.reduce((p, c) => _defu$1(p, c, "", merger), {})
   );
 }
-const defu = createDefu();
-const defuFn = createDefu((object, key, currentValue) => {
-  if (object[key] !== void 0 && typeof currentValue === "function") {
-    object[key] = currentValue(object[key]);
-    return true;
-  }
-});
+const defu = createDefu$1();
 
 function o(n){throw new Error(`${n} is not implemented yet!`)}let i$1 = class i extends EventEmitter{__unenv__={};readableEncoding=null;readableEnded=true;readableFlowing=false;readableHighWaterMark=0;readableLength=0;readableObjectMode=false;readableAborted=false;readableDidRead=false;closed=false;errored=null;readable=false;destroyed=false;static from(e,t){return new i(t)}constructor(e){super();}_read(e){}read(e){}setEncoding(e){return this}pause(){return this}resume(){return this}isPaused(){return  true}unpipe(e){return this}unshift(e,t){}wrap(e){return this}push(e,t){return  false}_destroy(e,t){this.removeAllListeners();}destroy(e){return this.destroyed=true,this._destroy(e),this}pipe(e,t){return {}}compose(e,t){throw new Error("Method not implemented.")}[Symbol.asyncDispose](){return this.destroy(),Promise.resolve()}async*[Symbol.asyncIterator](){throw o("Readable.asyncIterator")}iterator(e){throw o("Readable.iterator")}map(e,t){throw o("Readable.map")}filter(e,t){throw o("Readable.filter")}forEach(e,t){throw o("Readable.forEach")}reduce(e,t,r){throw o("Readable.reduce")}find(e,t){throw o("Readable.find")}findIndex(e,t){throw o("Readable.findIndex")}some(e,t){throw o("Readable.some")}toArray(e){throw o("Readable.toArray")}every(e,t){throw o("Readable.every")}flatMap(e,t){throw o("Readable.flatMap")}drop(e,t){throw o("Readable.drop")}take(e,t){throw o("Readable.take")}asIndexedPairs(e){throw o("Readable.asIndexedPairs")}};let l$1 = class l extends EventEmitter{__unenv__={};writable=true;writableEnded=false;writableFinished=false;writableHighWaterMark=0;writableLength=0;writableObjectMode=false;writableCorked=0;closed=false;errored=null;writableNeedDrain=false;writableAborted=false;destroyed=false;_data;_encoding="utf8";constructor(e){super();}pipe(e,t){return {}}_write(e,t,r){if(this.writableEnded){r&&r();return}if(this._data===void 0)this._data=e;else {const s=typeof this._data=="string"?Buffer$1.from(this._data,this._encoding||t||"utf8"):this._data,a=typeof e=="string"?Buffer$1.from(e,t||this._encoding||"utf8"):e;this._data=Buffer$1.concat([s,a]);}this._encoding=t,r&&r();}_writev(e,t){}_destroy(e,t){}_final(e){}write(e,t,r){const s=typeof t=="string"?this._encoding:"utf8",a=typeof t=="function"?t:typeof r=="function"?r:void 0;return this._write(e,s,a),true}setDefaultEncoding(e){return this}end(e,t,r){const s=typeof e=="function"?e:typeof t=="function"?t:typeof r=="function"?r:void 0;if(this.writableEnded)return s&&s(),this;const a=e===s?void 0:e;if(a){const u=t===s?void 0:t;this.write(a,u,s);}return this.writableEnded=true,this.writableFinished=true,this.emit("close"),this.emit("finish"),this}cork(){}uncork(){}destroy(e){return this.destroyed=true,delete this._data,this.removeAllListeners(),this}compose(e,t){throw new Error("Method not implemented.")}[Symbol.asyncDispose](){return Promise.resolve()}};const c$1=class c{allowHalfOpen=true;_destroy;constructor(e=new i$1,t=new l$1){Object.assign(this,e),Object.assign(this,t),this._destroy=m(e._destroy,t._destroy);}};function _(){return Object.assign(c$1.prototype,i$1.prototype),Object.assign(c$1.prototype,l$1.prototype),c$1}function m(...n){return function(...e){for(const t of n)t(...e);}}const g=_();class A extends g{__unenv__={};bufferSize=0;bytesRead=0;bytesWritten=0;connecting=false;destroyed=false;pending=false;localAddress="";localPort=0;remoteAddress="";remoteFamily="";remotePort=0;autoSelectFamilyAttemptedAddresses=[];readyState="readOnly";constructor(e){super();}write(e,t,r){return  false}connect(e,t,r){return this}end(e,t,r){return this}setEncoding(e){return this}pause(){return this}resume(){return this}setTimeout(e,t){return this}setNoDelay(e){return this}setKeepAlive(e,t){return this}address(){return {}}unref(){return this}ref(){return this}destroySoon(){this.destroy();}resetAndDestroy(){const e=new Error("ERR_SOCKET_CLOSED");return e.code="ERR_SOCKET_CLOSED",this.destroy(e),this}}class y extends i$1{aborted=false;httpVersion="1.1";httpVersionMajor=1;httpVersionMinor=1;complete=true;connection;socket;headers={};trailers={};method="GET";url="/";statusCode=200;statusMessage="";closed=false;errored=null;readable=false;constructor(e){super(),this.socket=this.connection=e||new A;}get rawHeaders(){const e=this.headers,t=[];for(const r in e)if(Array.isArray(e[r]))for(const s of e[r])t.push(r,s);else t.push(r,e[r]);return t}get rawTrailers(){return []}setTimeout(e,t){return this}get headersDistinct(){return p(this.headers)}get trailersDistinct(){return p(this.trailers)}}function p(n){const e={};for(const[t,r]of Object.entries(n))t&&(e[t]=(Array.isArray(r)?r:[r]).filter(Boolean));return e}class w extends l$1{statusCode=200;statusMessage="";upgrading=false;chunkedEncoding=false;shouldKeepAlive=false;useChunkedEncodingByDefault=false;sendDate=false;finished=false;headersSent=false;strictContentLength=false;connection=null;socket=null;req;_headers={};constructor(e){super(),this.req=e;}assignSocket(e){e._httpMessage=this,this.socket=e,this.connection=e,this.emit("socket",e),this._flush();}_flush(){this.flushHeaders();}detachSocket(e){}writeContinue(e){}writeHead(e,t,r){e&&(this.statusCode=e),typeof t=="string"&&(this.statusMessage=t,t=void 0);const s=r||t;if(s&&!Array.isArray(s))for(const a in s)this.setHeader(a,s[a]);return this.headersSent=true,this}writeProcessing(){}setTimeout(e,t){return this}appendHeader(e,t){e=e.toLowerCase();const r=this._headers[e],s=[...Array.isArray(r)?r:[r],...Array.isArray(t)?t:[t]].filter(Boolean);return this._headers[e]=s.length>1?s:s[0],this}setHeader(e,t){return this._headers[e.toLowerCase()]=t,this}setHeaders(e){for(const[t,r]of Object.entries(e))this.setHeader(t,r);return this}getHeader(e){return this._headers[e.toLowerCase()]}getHeaders(){return this._headers}getHeaderNames(){return Object.keys(this._headers)}hasHeader(e){return e.toLowerCase()in this._headers}removeHeader(e){delete this._headers[e.toLowerCase()];}addTrailers(e){}flushHeaders(){}writeEarlyHints(e,t){typeof t=="function"&&t();}}const E=(()=>{const n=function(){};return n.prototype=Object.create(null),n})();function R(n={}){const e=new E,t=Array.isArray(n)||H(n)?n:Object.entries(n);for(const[r,s]of t)if(s){if(e[r]===void 0){e[r]=s;continue}e[r]=[...Array.isArray(e[r])?e[r]:[e[r]],...Array.isArray(s)?s:[s]];}return e}function H(n){return typeof n?.entries=="function"}function v(n={}){if(n instanceof Headers)return n;const e=new Headers;for(const[t,r]of Object.entries(n))if(r!==void 0){if(Array.isArray(r)){for(const s of r)e.append(t,String(s));continue}e.set(t,String(r));}return e}const S=new Set([101,204,205,304]);async function b(n,e){const t=new y,r=new w(t);t.url=e.url?.toString()||"/";let s;if(!t.url.startsWith("/")){const d=new URL(t.url);s=d.host,t.url=d.pathname+d.search+d.hash;}t.method=e.method||"GET",t.headers=R(e.headers||{}),t.headers.host||(t.headers.host=e.host||s||"localhost"),t.connection.encrypted=t.connection.encrypted||e.protocol==="https",t.body=e.body||null,t.__unenv__=e.context,await n(t,r);let a=r._data;(S.has(r.statusCode)||t.method.toUpperCase()==="HEAD")&&(a=null,delete r._headers["content-length"]);const u={status:r.statusCode,statusText:r.statusMessage,headers:r._headers,body:a};return t.destroy(),r.destroy(),u}async function C(n,e,t={}){try{const r=await b(n,{url:e,...t});return new Response(r.body,{status:r.status,statusText:r.statusText,headers:v(r.headers)})}catch(r){return new Response(r.toString(),{status:Number.parseInt(r.statusCode||r.code)||500,statusText:r.statusText})}}
 
-function hasProp(obj, prop) {
+function hasProp$1(obj, prop) {
   try {
     return prop in obj;
   } catch {
@@ -875,7 +869,7 @@ function hasProp(obj, prop) {
   }
 }
 
-class H3Error extends Error {
+let H3Error$1 = class H3Error extends Error {
   static __h3_error__ = true;
   statusCode = 500;
   fatal = false;
@@ -892,28 +886,28 @@ class H3Error extends Error {
   toJSON() {
     const obj = {
       message: this.message,
-      statusCode: sanitizeStatusCode(this.statusCode, 500)
+      statusCode: sanitizeStatusCode$1(this.statusCode, 500)
     };
     if (this.statusMessage) {
-      obj.statusMessage = sanitizeStatusMessage(this.statusMessage);
+      obj.statusMessage = sanitizeStatusMessage$1(this.statusMessage);
     }
     if (this.data !== void 0) {
       obj.data = this.data;
     }
     return obj;
   }
-}
-function createError$1(input) {
+};
+function createError$2(input) {
   if (typeof input === "string") {
-    return new H3Error(input);
+    return new H3Error$1(input);
   }
-  if (isError(input)) {
+  if (isError$1(input)) {
     return input;
   }
-  const err = new H3Error(input.message ?? input.statusMessage ?? "", {
+  const err = new H3Error$1(input.message ?? input.statusMessage ?? "", {
     cause: input.cause || input
   });
-  if (hasProp(input, "stack")) {
+  if (hasProp$1(input, "stack")) {
     try {
       Object.defineProperty(err, "stack", {
         get() {
@@ -931,9 +925,9 @@ function createError$1(input) {
     err.data = input.data;
   }
   if (input.statusCode) {
-    err.statusCode = sanitizeStatusCode(input.statusCode, err.statusCode);
+    err.statusCode = sanitizeStatusCode$1(input.statusCode, err.statusCode);
   } else if (input.status) {
-    err.statusCode = sanitizeStatusCode(input.status, err.statusCode);
+    err.statusCode = sanitizeStatusCode$1(input.status, err.statusCode);
   }
   if (input.statusMessage) {
     err.statusMessage = input.statusMessage;
@@ -942,7 +936,7 @@ function createError$1(input) {
   }
   if (err.statusMessage) {
     const originalMessage = err.statusMessage;
-    const sanitizedMessage = sanitizeStatusMessage(err.statusMessage);
+    const sanitizedMessage = sanitizeStatusMessage$1(err.statusMessage);
     if (sanitizedMessage !== originalMessage) {
       console.warn(
         "[h3] Please prefer using `message` for longer error messages instead of `statusMessage`. In the future, `statusMessage` will be sanitized by default."
@@ -961,7 +955,7 @@ function sendError(event, error, debug) {
   if (event.handled) {
     return;
   }
-  const h3Error = isError(error) ? error : createError$1(error);
+  const h3Error = isError$1(error) ? error : createError$2(error);
   const responseBody = {
     statusCode: h3Error.statusCode,
     statusMessage: h3Error.statusMessage,
@@ -979,17 +973,14 @@ function sendError(event, error, debug) {
   event.node.res.setHeader("content-type", MIMES.json);
   event.node.res.end(JSON.stringify(responseBody, void 0, 2));
 }
-function isError(input) {
+function isError$1(input) {
   return input?.constructor?.__h3_error__ === true;
 }
 
-function getQuery(event) {
-  return getQuery$1(event.path || "");
+function getQuery$2(event) {
+  return getQuery$3(event.path || "");
 }
-function getMethod(event, defaultMethod = "GET") {
-  return (event.node.req.method || defaultMethod).toUpperCase();
-}
-function isMethod(event, expected, allowHead) {
+function isMethod$1(event, expected, allowHead) {
   if (typeof expected === "string") {
     if (event.method === expected) {
       return true;
@@ -999,9 +990,9 @@ function isMethod(event, expected, allowHead) {
   }
   return false;
 }
-function assertMethod(event, expected, allowHead) {
-  if (!isMethod(event, expected)) {
-    throw createError$1({
+function assertMethod$1(event, expected, allowHead) {
+  if (!isMethod$1(event, expected)) {
+    throw createError$2({
       statusCode: 405,
       statusMessage: "HTTP method is not allowed."
     });
@@ -1020,7 +1011,7 @@ function getRequestHeader(event, name) {
   const value = headers[name.toLowerCase()];
   return value;
 }
-function getRequestHost(event, opts = {}) {
+function getRequestHost$1(event, opts = {}) {
   if (opts.xForwardedHost) {
     const _header = event.node.req.headers["x-forwarded-host"];
     const xForwardedHost = (_header || "").split(",").shift()?.trim();
@@ -1030,15 +1021,15 @@ function getRequestHost(event, opts = {}) {
   }
   return event.node.req.headers.host || "localhost";
 }
-function getRequestProtocol(event, opts = {}) {
+function getRequestProtocol$1(event, opts = {}) {
   if (opts.xForwardedProto !== false && event.node.req.headers["x-forwarded-proto"] === "https") {
     return "https";
   }
   return event.node.req.connection?.encrypted ? "https" : "http";
 }
-function getRequestURL(event, opts = {}) {
-  const host = getRequestHost(event, opts);
-  const protocol = getRequestProtocol(event, opts);
+function getRequestURL$1(event, opts = {}) {
+  const host = getRequestHost$1(event, opts);
+  const protocol = getRequestProtocol$1(event, opts);
   const path = (event.node.req.originalUrl || event.path).replace(
     /^[/\\]+/g,
     "/"
@@ -1046,12 +1037,11 @@ function getRequestURL(event, opts = {}) {
   return new URL(path, `${protocol}://${host}`);
 }
 
-const RawBodySymbol = Symbol.for("h3RawBody");
-const ParsedBodySymbol = Symbol.for("h3ParsedBody");
-const PayloadMethods$1 = ["PATCH", "POST", "PUT", "DELETE"];
-function readRawBody(event, encoding = "utf8") {
-  assertMethod(event, PayloadMethods$1);
-  const _rawBody = event._requestBody || event.web?.request?.body || event.node.req[RawBodySymbol] || event.node.req.rawBody || event.node.req.body;
+const RawBodySymbol$1 = Symbol.for("h3RawBody");
+const PayloadMethods$1$1 = ["PATCH", "POST", "PUT", "DELETE"];
+function readRawBody$1(event, encoding = "utf8") {
+  assertMethod$1(event, PayloadMethods$1$1);
+  const _rawBody = event._requestBody || event.web?.request?.body || event.node.req[RawBodySymbol$1] || event.node.req.rawBody || event.node.req.body;
   if (_rawBody) {
     const promise2 = Promise.resolve(_rawBody).then((_resolved) => {
       if (Buffer.isBuffer(_resolved)) {
@@ -1100,7 +1090,7 @@ function readRawBody(event, encoding = "utf8") {
   if (!Number.parseInt(event.node.req.headers["content-length"] || "") && !String(event.node.req.headers["transfer-encoding"] ?? "").split(",").map((e) => e.trim()).filter(Boolean).includes("chunked")) {
     return Promise.resolve(void 0);
   }
-  const promise = event.node.req[RawBodySymbol] = new Promise(
+  const promise = event.node.req[RawBodySymbol$1] = new Promise(
     (resolve, reject) => {
       const bodyData = [];
       event.node.req.on("error", (err) => {
@@ -1115,39 +1105,19 @@ function readRawBody(event, encoding = "utf8") {
   const result = encoding ? promise.then((buff) => buff.toString(encoding)) : promise;
   return result;
 }
-async function readBody(event, options = {}) {
-  const request = event.node.req;
-  if (hasProp(request, ParsedBodySymbol)) {
-    return request[ParsedBodySymbol];
-  }
-  const contentType = request.headers["content-type"] || "";
-  const body = await readRawBody(event);
-  let parsed;
-  if (contentType === "application/json") {
-    parsed = _parseJSON(body, options.strict ?? true);
-  } else if (contentType.startsWith("application/x-www-form-urlencoded")) {
-    parsed = _parseURLEncodedBody(body);
-  } else if (contentType.startsWith("text/")) {
-    parsed = body;
-  } else {
-    parsed = _parseJSON(body, options.strict ?? false);
-  }
-  request[ParsedBodySymbol] = parsed;
-  return parsed;
-}
 function getRequestWebStream(event) {
-  if (!PayloadMethods$1.includes(event.method)) {
+  if (!PayloadMethods$1$1.includes(event.method)) {
     return;
   }
   const bodyStream = event.web?.request?.body || event._requestBody;
   if (bodyStream) {
     return bodyStream;
   }
-  const _hasRawBody = RawBodySymbol in event.node.req || "rawBody" in event.node.req || "body" in event.node.req || "__unenv__" in event.node.req;
+  const _hasRawBody = RawBodySymbol$1 in event.node.req || "rawBody" in event.node.req || "body" in event.node.req || "__unenv__" in event.node.req;
   if (_hasRawBody) {
     return new ReadableStream({
       async start(controller) {
-        const _rawBody = await readRawBody(event, false);
+        const _rawBody = await readRawBody$1(event, false);
         if (_rawBody) {
           controller.enqueue(_rawBody);
         }
@@ -1168,35 +1138,6 @@ function getRequestWebStream(event) {
       });
     }
   });
-}
-function _parseJSON(body = "", strict) {
-  if (!body) {
-    return void 0;
-  }
-  try {
-    return destr(body, { strict });
-  } catch {
-    throw createError$1({
-      statusCode: 400,
-      statusMessage: "Bad Request",
-      message: "Invalid JSON body"
-    });
-  }
-}
-function _parseURLEncodedBody(body) {
-  const form = new URLSearchParams(body);
-  const parsedForm = /* @__PURE__ */ Object.create(null);
-  for (const [key, value] of form.entries()) {
-    if (hasProp(parsedForm, key)) {
-      if (!Array.isArray(parsedForm[key])) {
-        parsedForm[key] = [parsedForm[key]];
-      }
-      parsedForm[key].push(value);
-    } else {
-      parsedForm[key] = value;
-    }
-  }
-  return parsedForm;
 }
 
 function handleCacheHeaders(event, opts) {
@@ -1236,11 +1177,11 @@ const MIMES = {
   json: "application/json"
 };
 
-const DISALLOWED_STATUS_CHARS = /[^\u0009\u0020-\u007E]/g;
-function sanitizeStatusMessage(statusMessage = "") {
-  return statusMessage.replace(DISALLOWED_STATUS_CHARS, "");
+const DISALLOWED_STATUS_CHARS$1 = /[^\u0009\u0020-\u007E]/g;
+function sanitizeStatusMessage$1(statusMessage = "") {
+  return statusMessage.replace(DISALLOWED_STATUS_CHARS$1, "");
 }
-function sanitizeStatusCode(statusCode, defaultStatusCode = 200) {
+function sanitizeStatusCode$1(statusCode, defaultStatusCode = 200) {
   if (!statusCode) {
     return defaultStatusCode;
   }
@@ -1253,7 +1194,7 @@ function sanitizeStatusCode(statusCode, defaultStatusCode = 200) {
   return statusCode;
 }
 
-function getDistinctCookieKey(name, opts) {
+function getDistinctCookieKey$1(name, opts) {
   return [name, opts.domain || "", opts.path || "/"].join(";");
 }
 
@@ -1263,23 +1204,23 @@ function parseCookies(event) {
 function getCookie(event, name) {
   return parseCookies(event)[name];
 }
-function setCookie(event, name, value, serializeOptions = {}) {
+function setCookie$1(event, name, value, serializeOptions = {}) {
   if (!serializeOptions.path) {
     serializeOptions = { path: "/", ...serializeOptions };
   }
-  const newCookie = serialize$2(name, value, serializeOptions);
-  const currentCookies = splitCookiesString(
+  const newCookie = serialize$3(name, value, serializeOptions);
+  const currentCookies = splitCookiesString$1(
     event.node.res.getHeader("set-cookie")
   );
   if (currentCookies.length === 0) {
     event.node.res.setHeader("set-cookie", newCookie);
     return;
   }
-  const newCookieKey = getDistinctCookieKey(name, serializeOptions);
+  const newCookieKey = getDistinctCookieKey$1(name, serializeOptions);
   event.node.res.removeHeader("set-cookie");
   for (const cookie of currentCookies) {
-    const parsed = parseSetCookie(cookie);
-    const key = getDistinctCookieKey(parsed.name, parsed);
+    const parsed = parseSetCookie$1(cookie);
+    const key = getDistinctCookieKey$1(parsed.name, parsed);
     if (key === newCookieKey) {
       continue;
     }
@@ -1288,14 +1229,14 @@ function setCookie(event, name, value, serializeOptions = {}) {
   event.node.res.appendHeader("set-cookie", newCookie);
 }
 function deleteCookie(event, name, serializeOptions) {
-  setCookie(event, name, "", {
+  setCookie$1(event, name, "", {
     ...serializeOptions,
     maxAge: 0
   });
 }
-function splitCookiesString(cookiesString) {
+function splitCookiesString$1(cookiesString) {
   if (Array.isArray(cookiesString)) {
-    return cookiesString.flatMap((c) => splitCookiesString(c));
+    return cookiesString.flatMap((c) => splitCookiesString$1(c));
   }
   if (typeof cookiesString !== "string") {
     return [];
@@ -1370,7 +1311,7 @@ function sendNoContent(event, code) {
   if (!code && event.node.res.statusCode !== 200) {
     code = event.node.res.statusCode;
   }
-  const _code = sanitizeStatusCode(code, 204);
+  const _code = sanitizeStatusCode$1(code, 204);
   if (_code === 204) {
     event.node.res.removeHeader("content-length");
   }
@@ -1379,13 +1320,13 @@ function sendNoContent(event, code) {
 }
 function setResponseStatus(event, code, text) {
   if (code) {
-    event.node.res.statusCode = sanitizeStatusCode(
+    event.node.res.statusCode = sanitizeStatusCode$1(
       code,
       event.node.res.statusCode
     );
   }
   if (text) {
-    event.node.res.statusMessage = sanitizeStatusMessage(text);
+    event.node.res.statusMessage = sanitizeStatusMessage$1(text);
   }
 }
 function getResponseStatus(event) {
@@ -1400,7 +1341,7 @@ function defaultContentType(event, type) {
   }
 }
 function sendRedirect(event, location, code = 302) {
-  event.node.res.statusCode = sanitizeStatusCode(
+  event.node.res.statusCode = sanitizeStatusCode$1(
     code,
     event.node.res.statusCode
   );
@@ -1421,10 +1362,9 @@ function setResponseHeaders(event, headers) {
   }
 }
 const setHeaders = setResponseHeaders;
-function setResponseHeader(event, name, value) {
+function setResponseHeader$1(event, name, value) {
   event.node.res.setHeader(name, value);
 }
-const setHeader = setResponseHeader;
 function appendResponseHeader(event, name, value) {
   let current = event.node.res.getHeader(name);
   if (!current) {
@@ -1468,7 +1408,7 @@ function sendStream(event, stream) {
     event._handled = true;
     return Promise.resolve();
   }
-  if (hasProp(stream, "pipeTo") && typeof stream.pipeTo === "function") {
+  if (hasProp$1(stream, "pipeTo") && typeof stream.pipeTo === "function") {
     return stream.pipeTo(
       new WritableStream({
         write(chunk) {
@@ -1479,7 +1419,7 @@ function sendStream(event, stream) {
       event.node.res.end();
     });
   }
-  if (hasProp(stream, "pipe") && typeof stream.pipe === "function") {
+  if (hasProp$1(stream, "pipe") && typeof stream.pipe === "function") {
     return new Promise((resolve, reject) => {
       stream.pipe(event.node.res);
       if (stream.on) {
@@ -1503,19 +1443,19 @@ function sendStream(event, stream) {
 function sendWebResponse(event, response) {
   for (const [key, value] of response.headers) {
     if (key === "set-cookie") {
-      event.node.res.appendHeader(key, splitCookiesString(value));
+      event.node.res.appendHeader(key, splitCookiesString$1(value));
     } else {
       event.node.res.setHeader(key, value);
     }
   }
   if (response.status) {
-    event.node.res.statusCode = sanitizeStatusCode(
+    event.node.res.statusCode = sanitizeStatusCode$1(
       response.status,
       event.node.res.statusCode
     );
   }
   if (response.statusText) {
-    event.node.res.statusMessage = sanitizeStatusMessage(response.statusText);
+    event.node.res.statusMessage = sanitizeStatusMessage$1(response.statusText);
   }
   if (response.redirected) {
     event.node.res.setHeader("location", response.url);
@@ -1546,7 +1486,7 @@ async function proxyRequest(event, target, opts = {}) {
       body = getRequestWebStream(event);
       duplex = "half";
     } else {
-      body = await readRawBody(event, false).catch(() => void 0);
+      body = await readRawBody$1(event, false).catch(() => void 0);
     }
   }
   const method = opts.fetchOptions?.method || event.method;
@@ -1576,17 +1516,17 @@ async function sendProxy(event, target, opts = {}) {
       ...opts.fetchOptions
     });
   } catch (error) {
-    throw createError$1({
+    throw createError$2({
       status: 502,
       statusMessage: "Bad Gateway",
       cause: error
     });
   }
-  event.node.res.statusCode = sanitizeStatusCode(
+  event.node.res.statusCode = sanitizeStatusCode$1(
     response.status,
     event.node.res.statusCode
   );
-  event.node.res.statusMessage = sanitizeStatusMessage(response.statusText);
+  event.node.res.statusMessage = sanitizeStatusMessage$1(response.statusText);
   const cookies = [];
   for (const [key, value] of response.headers.entries()) {
     if (key === "content-encoding") {
@@ -1596,7 +1536,7 @@ async function sendProxy(event, target, opts = {}) {
       continue;
     }
     if (key === "set-cookie") {
-      cookies.push(...splitCookiesString(value));
+      cookies.push(...splitCookiesString$1(value));
       continue;
     }
     event.node.res.setHeader(key, value);
@@ -1775,7 +1715,7 @@ class H3Event {
   }
 }
 function isEvent(input) {
-  return hasProp(input, "__is_event__");
+  return hasProp$1(input, "__is_event__");
 }
 function createEvent(req, res) {
   return new H3Event(req, res);
@@ -1794,27 +1734,27 @@ function _normalizeNodeHeaders(nodeHeaders) {
   return headers;
 }
 
-function defineEventHandler(handler) {
+function defineEventHandler$1(handler) {
   if (typeof handler === "function") {
     handler.__is_handler__ = true;
     return handler;
   }
   const _hooks = {
-    onRequest: _normalizeArray(handler.onRequest),
-    onBeforeResponse: _normalizeArray(handler.onBeforeResponse)
+    onRequest: _normalizeArray$1(handler.onRequest),
+    onBeforeResponse: _normalizeArray$1(handler.onBeforeResponse)
   };
   const _handler = (event) => {
-    return _callHandler(event, handler.handler, _hooks);
+    return _callHandler$1(event, handler.handler, _hooks);
   };
   _handler.__is_handler__ = true;
   _handler.__resolve__ = handler.handler.__resolve__;
   _handler.__websocket__ = handler.websocket;
   return _handler;
 }
-function _normalizeArray(input) {
+function _normalizeArray$1(input) {
   return input ? Array.isArray(input) ? input : [input] : void 0;
 }
-async function _callHandler(event, handler, hooks) {
+async function _callHandler$1(event, handler, hooks) {
   if (hooks.onRequest) {
     for (const hook of hooks.onRequest) {
       await hook(event);
@@ -1832,9 +1772,9 @@ async function _callHandler(event, handler, hooks) {
   }
   return response.body;
 }
-const eventHandler = defineEventHandler;
+const eventHandler = defineEventHandler$1;
 function isEventHandler(input) {
-  return hasProp(input, "__is_handler__");
+  return hasProp$1(input, "__is_handler__");
 }
 function toEventHandler(input, _, _route) {
   if (!isEventHandler(input)) {
@@ -1967,7 +1907,7 @@ function createAppEventHandler(stack, options) {
       }
     }
     if (!event.handled) {
-      throw createError$1({
+      throw createError$2({
         statusCode: 404,
         statusMessage: `Cannot find any path matching ${event.path || "/"}.`
       });
@@ -2001,7 +1941,7 @@ function createResolver(stack) {
         res = {
           ...res,
           ..._res,
-          route: joinURL(res.route || "/", _res.route || "/")
+          route: joinURL$1(res.route || "/", _res.route || "/")
         };
       }
       return res;
@@ -2019,7 +1959,7 @@ function normalizeLayer(input) {
     handler = toEventHandler(handler, void 0, input.route);
   }
   return {
-    route: withoutTrailingSlash(input.route),
+    route: withoutTrailingSlash$1(input.route),
     match: input.match,
     handler
   };
@@ -2044,7 +1984,7 @@ function handleHandlerResponse(event, val, jsonSpace) {
       });
     }
     if (val instanceof Error) {
-      throw createError$1(val);
+      throw createError$2(val);
     }
     if (typeof val.end === "function") {
       return true;
@@ -2060,7 +2000,7 @@ function handleHandlerResponse(event, val, jsonSpace) {
   if (valType === "bigint") {
     return send(event, val.toString(), MIMES.json);
   }
-  throw createError$1({
+  throw createError$2({
     statusCode: 500,
     statusMessage: `[h3] Cannot send ${valType} as response.`
   });
@@ -2079,7 +2019,7 @@ function websocketOptions(evResolver, appOptions) {
     ...appOptions.websocket,
     async resolve(info) {
       const url = info.request?.url || info.url || "/";
-      const { pathname } = typeof url === "string" ? parseURL(url) : url;
+      const { pathname } = typeof url === "string" ? parseURL$1(url) : url;
       const resolved = await evResolver(pathname);
       return resolved?.handler?.__websocket__ || {};
     }
@@ -2129,7 +2069,7 @@ function createRouter(opts = {}) {
     const matched = _router.lookup(path);
     if (!matched || !matched.handlers) {
       return {
-        error: createError$1({
+        error: createError$2({
           statusCode: 404,
           name: "Not Found",
           statusMessage: `Cannot find any route matching ${path || "/"}.`
@@ -2157,7 +2097,7 @@ function createRouter(opts = {}) {
     }
     if (!handler) {
       return {
-        error: createError$1({
+        error: createError$2({
           statusCode: 405,
           name: "Method Not Allowed",
           statusMessage: `Method ${method} is not allowed on this route.`
@@ -2216,8 +2156,8 @@ function toNodeListener(app) {
     try {
       await app.handler(event);
     } catch (_error) {
-      const error = createError$1(_error);
-      if (!isError(_error)) {
+      const error = createError$2(_error);
+      if (!isError$1(_error)) {
         error.unhandled = true;
       }
       setResponseStatus(event, error.statusCode, error.statusMessage);
@@ -2668,10 +2608,10 @@ function createFetch(globalOptions = {}) {
     }
     if (typeof context.request === "string") {
       if (context.options.baseURL) {
-        context.request = withBase(context.request, context.options.baseURL);
+        context.request = withBase$1(context.request, context.options.baseURL);
       }
       if (context.options.query) {
-        context.request = withQuery(context.request, context.options.query);
+        context.request = withQuery$1(context.request, context.options.query);
         delete context.options.query;
       }
       if ("query" in context.options) {
@@ -2746,7 +2686,7 @@ function createFetch(globalOptions = {}) {
       switch (responseType) {
         case "json": {
           const data = await context.response.text();
-          const parseFunction = context.options.parseResponse || destr;
+          const parseFunction = context.options.parseResponse || destr$1;
           context.response._data = parseFunction(data);
           break;
         }
@@ -2814,8 +2754,140 @@ function createNodeFetch() {
 const fetch = globalThis.fetch ? (...args) => globalThis.fetch(...args) : createNodeFetch();
 const Headers$1 = globalThis.Headers || s$1;
 const AbortController = globalThis.AbortController || i;
-const ofetch = createFetch({ fetch, Headers: Headers$1, AbortController });
-const $fetch = ofetch;
+createFetch({ fetch, Headers: Headers$1, AbortController });
+
+const storageKeyProperties = [
+  "has",
+  "hasItem",
+  "get",
+  "getItem",
+  "getItemRaw",
+  "set",
+  "setItem",
+  "setItemRaw",
+  "del",
+  "remove",
+  "removeItem",
+  "getMeta",
+  "setMeta",
+  "removeMeta",
+  "getKeys",
+  "clear",
+  "mount",
+  "unmount"
+];
+function prefixStorage(storage, base) {
+  base = normalizeBaseKey$1(base);
+  if (!base) {
+    return storage;
+  }
+  const nsStorage = { ...storage };
+  for (const property of storageKeyProperties) {
+    nsStorage[property] = (key = "", ...args) => (
+      // @ts-ignore
+      storage[property](base + key, ...args)
+    );
+  }
+  nsStorage.getKeys = (key = "", ...arguments_) => storage.getKeys(base + key, ...arguments_).then((keys) => keys.map((key2) => key2.slice(base.length)));
+  nsStorage.keys = nsStorage.getKeys;
+  nsStorage.getItems = async (items, commonOptions) => {
+    const prefixedItems = items.map(
+      (item) => typeof item === "string" ? base + item : { ...item, key: base + item.key }
+    );
+    const results = await storage.getItems(prefixedItems, commonOptions);
+    return results.map((entry) => ({
+      key: entry.key.slice(base.length),
+      value: entry.value
+    }));
+  };
+  nsStorage.setItems = async (items, commonOptions) => {
+    const prefixedItems = items.map((item) => ({
+      key: base + item.key,
+      value: item.value,
+      options: item.options
+    }));
+    return storage.setItems(prefixedItems, commonOptions);
+  };
+  return nsStorage;
+}
+function normalizeKey$2(key) {
+  if (!key) {
+    return "";
+  }
+  return key.split("?")[0]?.replace(/[/\\]/g, ":").replace(/:+/g, ":").replace(/^:|:$/g, "") || "";
+}
+function normalizeBaseKey$1(base) {
+  base = normalizeKey$2(base);
+  return base ? base + ":" : "";
+}
+
+const suspectProtoRx = /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/;
+const suspectConstructorRx = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/;
+const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
+function jsonParseTransform(key, value) {
+  if (key === "__proto__" || key === "constructor" && value && typeof value === "object" && "prototype" in value) {
+    warnKeyDropped(key);
+    return;
+  }
+  return value;
+}
+function warnKeyDropped(key) {
+  console.warn(`[destr] Dropping "${key}" key to prevent prototype pollution.`);
+}
+function destr(value, options = {}) {
+  if (typeof value !== "string") {
+    return value;
+  }
+  if (value[0] === '"' && value[value.length - 1] === '"' && value.indexOf("\\") === -1) {
+    return value.slice(1, -1);
+  }
+  const _value = value.trim();
+  if (_value.length <= 9) {
+    switch (_value.toLowerCase()) {
+      case "true": {
+        return true;
+      }
+      case "false": {
+        return false;
+      }
+      case "undefined": {
+        return void 0;
+      }
+      case "null": {
+        return null;
+      }
+      case "nan": {
+        return Number.NaN;
+      }
+      case "infinity": {
+        return Number.POSITIVE_INFINITY;
+      }
+      case "-infinity": {
+        return Number.NEGATIVE_INFINITY;
+      }
+    }
+  }
+  if (!JsonSigRx.test(value)) {
+    if (options.strict) {
+      throw new SyntaxError("[destr] Invalid JSON");
+    }
+    return value;
+  }
+  try {
+    if (suspectProtoRx.test(value) || suspectConstructorRx.test(value)) {
+      if (options.strict) {
+        throw new Error("[destr] Possible prototype pollution");
+      }
+      return JSON.parse(value, jsonParseTransform);
+    }
+    return JSON.parse(value);
+  } catch (error) {
+    if (options.strict) {
+      throw error;
+    }
+    return value;
+  }
+}
 
 function wrapToPromise(value) {
   if (!value || typeof value.then !== "function") {
@@ -2880,61 +2952,6 @@ function base64Encode(input) {
     return Buffer.from(input).toString("base64");
   }
   return globalThis.btoa(String.fromCodePoint(...input));
-}
-
-const storageKeyProperties = [
-  "has",
-  "hasItem",
-  "get",
-  "getItem",
-  "getItemRaw",
-  "set",
-  "setItem",
-  "setItemRaw",
-  "del",
-  "remove",
-  "removeItem",
-  "getMeta",
-  "setMeta",
-  "removeMeta",
-  "getKeys",
-  "clear",
-  "mount",
-  "unmount"
-];
-function prefixStorage(storage, base) {
-  base = normalizeBaseKey(base);
-  if (!base) {
-    return storage;
-  }
-  const nsStorage = { ...storage };
-  for (const property of storageKeyProperties) {
-    nsStorage[property] = (key = "", ...args) => (
-      // @ts-ignore
-      storage[property](base + key, ...args)
-    );
-  }
-  nsStorage.getKeys = (key = "", ...arguments_) => storage.getKeys(base + key, ...arguments_).then((keys) => keys.map((key2) => key2.slice(base.length)));
-  nsStorage.keys = nsStorage.getKeys;
-  nsStorage.getItems = async (items, commonOptions) => {
-    const prefixedItems = items.map(
-      (item) => typeof item === "string" ? base + item : { ...item, key: base + item.key }
-    );
-    const results = await storage.getItems(prefixedItems, commonOptions);
-    return results.map((entry) => ({
-      key: entry.key.slice(base.length),
-      value: entry.value
-    }));
-  };
-  nsStorage.setItems = async (items, commonOptions) => {
-    const prefixedItems = items.map((item) => ({
-      key: base + item.key,
-      value: item.value,
-      options: item.options
-    }));
-    return storage.setItems(prefixedItems, commonOptions);
-  };
-  return nsStorage;
 }
 function normalizeKey$1(key) {
   if (!key) {
@@ -3441,21 +3458,21 @@ const assets$1 = {
 function defineDriver(factory) {
   return factory;
 }
-function createError(driver, message, opts) {
+function createError$1(driver, message, opts) {
   const err = new Error(`[unstorage] [${driver}] ${message}`, opts);
   if (Error.captureStackTrace) {
-    Error.captureStackTrace(err, createError);
+    Error.captureStackTrace(err, createError$1);
   }
   return err;
 }
 function createRequiredError(driver, name) {
   if (Array.isArray(name)) {
-    return createError(
+    return createError$1(
       driver,
       `Missing some of the required options ${name.map((n) => "`" + n + "`").join(", ")}`
     );
   }
-  return createError(driver, `Missing required option \`${name}\`.`);
+  return createError$1(driver, `Missing required option \`${name}\`.`);
 }
 
 function ignoreNotfound(err) {
@@ -3534,7 +3551,7 @@ const unstorage_47drivers_47fs_45lite = defineDriver((opts = {}) => {
   opts.base = resolve$1(opts.base);
   const r = (key) => {
     if (PATH_TRAVERSE_RE.test(key)) {
-      throw createError(
+      throw createError$1(
         DRIVER_NAME,
         `Invalid key: ${JSON.stringify(key)}. It should not contain .. segments`
       );
@@ -3601,13 +3618,13 @@ function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
 }
 
-function serialize$1(o){return typeof o=="string"?`'${o}'`:new c().serialize(o)}const c=/*@__PURE__*/function(){class o{#t=new Map;compare(t,r){const e=typeof t,n=typeof r;return e==="string"&&n==="string"?t.localeCompare(r):e==="number"&&n==="number"?t-r:String.prototype.localeCompare.call(this.serialize(t,true),this.serialize(r,true))}serialize(t,r){if(t===null)return "null";switch(typeof t){case "string":return r?t:`'${t}'`;case "bigint":return `${t}n`;case "object":return this.$object(t);case "function":return this.$function(t)}return String(t)}serializeObject(t){const r=Object.prototype.toString.call(t);if(r!=="[object Object]")return this.serializeBuiltInType(r.length<10?`unknown:${r}`:r.slice(8,-1),t);const e=t.constructor,n=e===Object||e===void 0?"":e.name;if(n!==""&&globalThis[n]===e)return this.serializeBuiltInType(n,t);if(typeof t.toJSON=="function"){const i=t.toJSON();return n+(i!==null&&typeof i=="object"?this.$object(i):`(${this.serialize(i)})`)}return this.serializeObjectEntries(n,Object.entries(t))}serializeBuiltInType(t,r){const e=this["$"+t];if(e)return e.call(this,r);if(typeof r?.entries=="function")return this.serializeObjectEntries(t,r.entries());throw new Error(`Cannot serialize ${t}`)}serializeObjectEntries(t,r){const e=Array.from(r).sort((i,a)=>this.compare(i[0],a[0]));let n=`${t}{`;for(let i=0;i<e.length;i++){const[a,l]=e[i];n+=`${this.serialize(a,true)}:${this.serialize(l)}`,i<e.length-1&&(n+=",");}return n+"}"}$object(t){let r=this.#t.get(t);return r===void 0&&(this.#t.set(t,`#${this.#t.size}`),r=this.serializeObject(t),this.#t.set(t,r)),r}$function(t){const r=Function.prototype.toString.call(t);return r.slice(-15)==="[native code] }"?`${t.name||""}()[native]`:`${t.name}(${t.length})${r.replace(/\s*\n\s*/g,"")}`}$Array(t){let r="[";for(let e=0;e<t.length;e++)r+=this.serialize(t[e]),e<t.length-1&&(r+=",");return r+"]"}$Date(t){try{return `Date(${t.toISOString()})`}catch{return "Date(null)"}}$ArrayBuffer(t){return `ArrayBuffer[${new Uint8Array(t).join(",")}]`}$Set(t){return `Set${this.$Array(Array.from(t).sort((r,e)=>this.compare(r,e)))}`}$Map(t){return this.serializeObjectEntries("Map",t.entries())}}for(const s of ["Error","RegExp","URL"])o.prototype["$"+s]=function(t){return `${s}(${t})`};for(const s of ["Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array"])o.prototype["$"+s]=function(t){return `${s}[${t.join(",")}]`};for(const s of ["BigInt64Array","BigUint64Array"])o.prototype["$"+s]=function(t){return `${s}[${t.join("n,")}${t.length>0?"n":""}]`};return o}();
+function serialize$2(o){return typeof o=="string"?`'${o}'`:new c().serialize(o)}const c=/*@__PURE__*/function(){class o{#t=new Map;compare(t,r){const e=typeof t,n=typeof r;return e==="string"&&n==="string"?t.localeCompare(r):e==="number"&&n==="number"?t-r:String.prototype.localeCompare.call(this.serialize(t,true),this.serialize(r,true))}serialize(t,r){if(t===null)return "null";switch(typeof t){case "string":return r?t:`'${t}'`;case "bigint":return `${t}n`;case "object":return this.$object(t);case "function":return this.$function(t)}return String(t)}serializeObject(t){const r=Object.prototype.toString.call(t);if(r!=="[object Object]")return this.serializeBuiltInType(r.length<10?`unknown:${r}`:r.slice(8,-1),t);const e=t.constructor,n=e===Object||e===void 0?"":e.name;if(n!==""&&globalThis[n]===e)return this.serializeBuiltInType(n,t);if(typeof t.toJSON=="function"){const i=t.toJSON();return n+(i!==null&&typeof i=="object"?this.$object(i):`(${this.serialize(i)})`)}return this.serializeObjectEntries(n,Object.entries(t))}serializeBuiltInType(t,r){const e=this["$"+t];if(e)return e.call(this,r);if(typeof r?.entries=="function")return this.serializeObjectEntries(t,r.entries());throw new Error(`Cannot serialize ${t}`)}serializeObjectEntries(t,r){const e=Array.from(r).sort((i,a)=>this.compare(i[0],a[0]));let n=`${t}{`;for(let i=0;i<e.length;i++){const[a,l]=e[i];n+=`${this.serialize(a,true)}:${this.serialize(l)}`,i<e.length-1&&(n+=",");}return n+"}"}$object(t){let r=this.#t.get(t);return r===void 0&&(this.#t.set(t,`#${this.#t.size}`),r=this.serializeObject(t),this.#t.set(t,r)),r}$function(t){const r=Function.prototype.toString.call(t);return r.slice(-15)==="[native code] }"?`${t.name||""}()[native]`:`${t.name}(${t.length})${r.replace(/\s*\n\s*/g,"")}`}$Array(t){let r="[";for(let e=0;e<t.length;e++)r+=this.serialize(t[e]),e<t.length-1&&(r+=",");return r+"]"}$Date(t){try{return `Date(${t.toISOString()})`}catch{return "Date(null)"}}$ArrayBuffer(t){return `ArrayBuffer[${new Uint8Array(t).join(",")}]`}$Set(t){return `Set${this.$Array(Array.from(t).sort((r,e)=>this.compare(r,e)))}`}$Map(t){return this.serializeObjectEntries("Map",t.entries())}}for(const s of ["Error","RegExp","URL"])o.prototype["$"+s]=function(t){return `${s}(${t})`};for(const s of ["Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array"])o.prototype["$"+s]=function(t){return `${s}[${t.join(",")}]`};for(const s of ["BigInt64Array","BigUint64Array"])o.prototype["$"+s]=function(t){return `${s}[${t.join("n,")}${t.length>0?"n":""}]`};return o}();
 
 function isEqual(object1, object2) {
   if (object1 === object2) {
     return true;
   }
-  if (serialize$1(object1) === serialize$1(object2)) {
+  if (serialize$2(object1) === serialize$2(object2)) {
     return true;
   }
   return false;
@@ -3616,7 +3633,7 @@ function isEqual(object1, object2) {
 const e=globalThis.process?.getBuiltinModule?.("crypto")?.hash,r="sha256",s="base64url";function digest(t){if(e)return e(r,t,s);const o=createHash(r).update(t);return globalThis.process?.versions?.webcontainer?o.digest().toString(s):o.digest(s)}
 
 function hash$1(input) {
-  return digest(serialize$1(input));
+  return digest(serialize$2(input));
 }
 
 const Hasher = /* @__PURE__ */ (() => {
@@ -3793,13 +3810,13 @@ const Hasher = /* @__PURE__ */ (() => {
   }
   return Hasher2;
 })();
-function serialize(object) {
+function serialize$1(object) {
   const hasher = new Hasher();
   hasher.dispatch(object);
   return hasher.buff;
 }
 function hash(value) {
-  return digest(typeof value === "string" ? value : serialize(value)).replace(/[-_]/g, "").slice(0, 10);
+  return digest(typeof value === "string" ? value : serialize$1(value)).replace(/[-_]/g, "").slice(0, 10);
 }
 
 function defaultCacheOptions() {
@@ -3928,7 +3945,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
       const _path = event.node.req.originalUrl || event.node.req.url || event.path;
       let _pathname;
       try {
-        _pathname = escapeKey(decodeURI(parseURL(_path).pathname)).slice(0, 16) || "index";
+        _pathname = escapeKey(decodeURI(parseURL$1(_path).pathname)).slice(0, 16) || "index";
       } catch {
         _pathname = "-";
       }
@@ -4081,7 +4098,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
     },
     _opts
   );
-  return defineEventHandler(async (event) => {
+  return defineEventHandler$1(async (event) => {
     if (opts.headersOnly) {
       if (handleCacheHeaders(event, { maxAge: opts.maxAge })) {
         return;
@@ -4107,7 +4124,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
       if (name === "set-cookie") {
         event.node.res.appendHeader(
           name,
-          splitCookiesString(value)
+          splitCookiesString$1(value)
         );
       } else {
         if (value !== void 0) {
@@ -4219,6 +4236,67 @@ function klona(x) {
 	return x;
 }
 
+function isPlainObject(value) {
+  if (value === null || typeof value !== "object") {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== null && prototype !== Object.prototype && Object.getPrototypeOf(prototype) !== null) {
+    return false;
+  }
+  if (Symbol.iterator in value) {
+    return false;
+  }
+  if (Symbol.toStringTag in value) {
+    return Object.prototype.toString.call(value) === "[object Module]";
+  }
+  return true;
+}
+
+function _defu(baseObject, defaults, namespace = ".", merger) {
+  if (!isPlainObject(defaults)) {
+    return _defu(baseObject, {}, namespace, merger);
+  }
+  const object = Object.assign({}, defaults);
+  for (const key in baseObject) {
+    if (key === "__proto__" || key === "constructor") {
+      continue;
+    }
+    const value = baseObject[key];
+    if (value === null || value === void 0) {
+      continue;
+    }
+    if (merger && merger(object, key, value, namespace)) {
+      continue;
+    }
+    if (Array.isArray(value) && Array.isArray(object[key])) {
+      object[key] = [...value, ...object[key]];
+    } else if (isPlainObject(value) && isPlainObject(object[key])) {
+      object[key] = _defu(
+        value,
+        object[key],
+        (namespace ? `${namespace}.` : "") + key.toString(),
+        merger
+      );
+    } else {
+      object[key] = value;
+    }
+  }
+  return object;
+}
+function createDefu(merger) {
+  return (...arguments_) => (
+    // eslint-disable-next-line unicorn/no-array-reduce
+    arguments_.reduce((p, c) => _defu(p, c, "", merger), {})
+  );
+}
+const defuFn = createDefu((object, key, currentValue) => {
+  if (object[key] !== void 0 && typeof currentValue === "function") {
+    object[key] = currentValue(object[key]);
+    return true;
+  }
+});
+
 const inlineAppConfig = {
   "nuxt": {}
 };
@@ -4284,7 +4362,7 @@ function snakeCase(str) {
 
 function getEnv(key, opts) {
   const envKey = snakeCase(key).toUpperCase();
-  return destr(
+  return destr$1(
     process.env[opts.prefix + envKey] ?? process.env[opts.altPrefix + envKey]
   );
 }
@@ -4323,7 +4401,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/",
-    "buildId": "deb08dcb-37b6-43f9-9c63-59e0fd0216d9",
+    "buildId": "6284f445-11ef-4013-8598-958f40790302",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
@@ -4553,10 +4631,10 @@ function createRouteRulesHandler(ctx) {
         if (strpBase) {
           targetPath = withoutBase(targetPath, strpBase);
         }
-        target = joinURL(target.slice(0, -3), targetPath);
+        target = joinURL$1(target.slice(0, -3), targetPath);
       } else if (event.path.includes("?")) {
-        const query = getQuery$1(event.path);
-        target = withQuery(target, query);
+        const query = getQuery$3(event.path);
+        target = withQuery$1(target, query);
       }
       return sendRedirect(event, target, routeRules.redirect.statusCode);
     }
@@ -4568,10 +4646,10 @@ function createRouteRulesHandler(ctx) {
         if (strpBase) {
           targetPath = withoutBase(targetPath, strpBase);
         }
-        target = joinURL(target.slice(0, -3), targetPath);
+        target = joinURL$1(target.slice(0, -3), targetPath);
       } else if (event.path.includes("?")) {
-        const query = getQuery$1(event.path);
-        target = withQuery(target, query);
+        const query = getQuery$3(event.path);
+        target = withQuery$1(target, query);
       }
       return proxyRequest(event, target, {
         fetch: ctx.localFetch,
@@ -4621,7 +4699,7 @@ function normalizeFetchResponse(response) {
   });
 }
 function normalizeCookieHeader(header = "") {
-  return splitCookiesString(joinHeaders(header));
+  return splitCookiesString$1(joinHeaders(header));
 }
 function normalizeCookieHeaders(headers) {
   const outgoingHeaders = new Headers();
@@ -4671,7 +4749,7 @@ const errorHandler$0 = (async function errorhandler(error, event, { defaultHandl
   const reqHeaders = getRequestHeaders(event);
   const isRenderingError = event.path.startsWith("/__nuxt_error") || !!reqHeaders["x-nuxt-error"];
   const res = isRenderingError ? null : await useNitroApp().localFetch(
-    withQuery(joinURL(useRuntimeConfig(event).app.baseURL, "/__nuxt_error"), errorObject),
+    withQuery$1(joinURL$1(useRuntimeConfig(event).app.baseURL, "/__nuxt_error"), errorObject),
     {
       headers: { ...reqHeaders, "x-nuxt-error": "true" },
       redirect: "manual"
@@ -4682,7 +4760,7 @@ const errorHandler$0 = (async function errorhandler(error, event, { defaultHandl
   }
   if (!res) {
     const { template } = await import('../_/error-500.mjs');
-    setResponseHeader(event, "Content-Type", "text/html;charset=UTF-8");
+    setResponseHeader$1(event, "Content-Type", "text/html;charset=UTF-8");
     return send(event, template(errorObject));
   }
   const html = await res.text();
@@ -4691,7 +4769,7 @@ const errorHandler$0 = (async function errorhandler(error, event, { defaultHandl
       appendResponseHeader(event, header, value);
       continue;
     }
-    setResponseHeader(event, header, value);
+    setResponseHeader$1(event, header, value);
   }
   setResponseStatus(event, res.status && res.status !== 200 ? res.status : defaultRes.status, res.statusText || defaultRes.statusText);
   return send(event, html);
@@ -4713,7 +4791,7 @@ function defaultHandler(error, event, opts) {
   const isSensitive = error.unhandled || error.fatal;
   const statusCode = error.statusCode || 500;
   const statusMessage = error.statusMessage || "Server Error";
-  const url = getRequestURL(event, { xForwardedHost: true, xForwardedProto: true });
+  const url = getRequestURL$1(event, { xForwardedHost: true, xForwardedProto: true });
   if (statusCode === 404) {
     const baseURL = "/";
     if (/^\/[^/]/.test(baseURL) && !url.pathname.startsWith(baseURL)) {
@@ -4784,278 +4862,313 @@ const plugins = [
 ];
 
 const assets = {
-  "/avator.jpg": {
-    "type": "image/jpeg",
-    "etag": "\"2a1e4-TUf6dwLHu3H0rzlGMvgdnPArMMw\"",
-    "mtime": "2025-12-10T06:45:39.603Z",
-    "size": 172516,
-    "path": "../assets/avator.jpg"
-  },
   "/favicon.ico": {
     "type": "image/vnd.microsoft.icon",
     "etag": "\"10be-n8egyE9tcb7sKGr/pYCaQ4uWqxI\"",
-    "mtime": "2025-12-10T06:45:39.602Z",
+    "mtime": "2026-02-05T08:49:47.356Z",
     "size": 4286,
     "path": "../assets/favicon.ico"
+  },
+  "/avator.jpg": {
+    "type": "image/jpeg",
+    "etag": "\"2a1e4-TUf6dwLHu3H0rzlGMvgdnPArMMw\"",
+    "mtime": "2026-02-05T08:49:47.357Z",
+    "size": 172516,
+    "path": "../assets/avator.jpg"
   },
   "/robots.txt": {
     "type": "text/plain; charset=utf-8",
     "etag": "\"18-j8OIsL9qGDmNZ+lHhp2tyH4XtaE\"",
-    "mtime": "2025-12-10T06:45:39.602Z",
+    "mtime": "2026-02-05T08:49:47.357Z",
     "size": 24,
     "path": "../assets/robots.txt"
   },
   "/about/_payload.json": {
     "type": "application/json;charset=utf-8",
-    "etag": "\"45-3z+peNTWAxK8KZY2oufjc5+LpoA\"",
-    "mtime": "2025-12-10T06:45:39.587Z",
+    "etag": "\"45-VdZLcQ+Oz033Qi/yg6SK4iESPII\"",
+    "mtime": "2026-02-05T08:49:47.325Z",
     "size": 69,
     "path": "../assets/about/_payload.json"
   },
   "/about/index.html": {
     "type": "text/html;charset=utf-8",
-    "etag": "\"258d-j0KTiTwO5gHN7vUvlqR0eJHc4ms\"",
-    "mtime": "2025-12-10T06:45:39.585Z",
-    "size": 9613,
+    "etag": "\"24ac-qY8gr/h5OlYBZHA5/b18+xzvlf0\"",
+    "mtime": "2026-02-05T08:49:47.322Z",
+    "size": 9388,
     "path": "../assets/about/index.html"
   },
-  "/_nuxt/AQQBIGEz.js": {
+  "/_nuxt/4UZyUqYl.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"15ed-Xs3exvP2EJSxstjZI1K1Lx1DcMI\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
-    "size": 5613,
-    "path": "../assets/_nuxt/AQQBIGEz.js"
+    "etag": "\"e8c-VxAgE+9maVlP/yYbnHIxqzma+sw\"",
+    "mtime": "2026-02-05T08:49:47.351Z",
+    "size": 3724,
+    "path": "../assets/_nuxt/4UZyUqYl.js"
   },
   "/_nuxt/B3t9EnZH.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"176b-dS3okWqJK1EVKxrEYx28irr8Qmw\"",
-    "mtime": "2025-12-10T06:45:39.598Z",
+    "mtime": "2026-02-05T08:49:47.351Z",
     "size": 5995,
     "path": "../assets/_nuxt/B3t9EnZH.js"
   },
   "/_nuxt/BGb4CRER.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"c6-lA99L/XsZpjP1xjMCrIheqmdkTY\"",
-    "mtime": "2025-12-10T06:45:39.598Z",
+    "mtime": "2026-02-05T08:49:47.351Z",
     "size": 198,
     "path": "../assets/_nuxt/BGb4CRER.js"
   },
   "/_nuxt/BJ2ClxiI.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"a45-zN9HxSHCgw/dHdLJnzIzRqykuKE\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.351Z",
     "size": 2629,
     "path": "../assets/_nuxt/BJ2ClxiI.js"
   },
   "/_nuxt/BQnnDUv8.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"eb-Rr/487dMqZUC/iZCew5YW4n13Io\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.351Z",
     "size": 235,
     "path": "../assets/_nuxt/BQnnDUv8.js"
   },
-  "/_nuxt/BaqswtCi.js": {
+  "/_nuxt/BeY-ZrbH.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"5cd-mTuDdF5GbZv37BaTHwGsEIBkMB8\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
-    "size": 1485,
-    "path": "../assets/_nuxt/BaqswtCi.js"
+    "etag": "\"352-FBt/U8vJTKviTZsmogVr/DUei40\"",
+    "mtime": "2026-02-05T08:49:47.351Z",
+    "size": 850,
+    "path": "../assets/_nuxt/BeY-ZrbH.js"
+  },
+  "/_nuxt/Bw68YU5R.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"13c4-9mni/tcMGgLGqCVH5mqE+PbVwN8\"",
+    "mtime": "2026-02-05T08:49:47.351Z",
+    "size": 5060,
+    "path": "../assets/_nuxt/Bw68YU5R.js"
   },
   "/_nuxt/Bxya13iq.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"cd-/oeHSQ9m+8bzE/15My/d9BJAqvU\"",
-    "mtime": "2025-12-10T06:45:39.598Z",
+    "mtime": "2026-02-05T08:49:47.351Z",
     "size": 205,
     "path": "../assets/_nuxt/Bxya13iq.js"
   },
   "/_nuxt/C-kOqjUU.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"13bb-sW26CjlR7vccudnJR2NyGq/Tv4Y\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.351Z",
     "size": 5051,
     "path": "../assets/_nuxt/C-kOqjUU.js"
+  },
+  "/_nuxt/CoqTI0i-.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"35ba-XlsAPx/JU6VEIhA5xl8cAriGuO0\"",
+    "mtime": "2026-02-05T08:49:47.352Z",
+    "size": 13754,
+    "path": "../assets/_nuxt/CoqTI0i-.js"
   },
   "/_nuxt/CbEZ_Yoh.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"6c7-7+F7wSpY19Mlr0immwc/ddciKBE\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 1735,
     "path": "../assets/_nuxt/CbEZ_Yoh.js"
   },
-  "/_nuxt/D0FD5zhC.js": {
+  "/_nuxt/D-IL4YnL.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"13c4-wY3eQH2myU/GxsQH9K/WHz8nmJw\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
-    "size": 5060,
-    "path": "../assets/_nuxt/D0FD5zhC.js"
+    "etag": "\"c8-51Go8g1Rrg9RDOTkQZ+UJlJPb9M\"",
+    "mtime": "2026-02-05T08:49:47.352Z",
+    "size": 200,
+    "path": "../assets/_nuxt/D-IL4YnL.js"
   },
   "/_nuxt/DFIlBUO7.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"8ae-jNcIiJev6VwB8mXmGCLJHFpWpkg\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 2222,
     "path": "../assets/_nuxt/DFIlBUO7.js"
-  },
-  "/_nuxt/DKJ8wFBV.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"f5d-tyfNCs5ad2SfDlcK99uHdj2yRSo\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
-    "size": 3933,
-    "path": "../assets/_nuxt/DKJ8wFBV.js"
-  },
-  "/_nuxt/DTkK67R7.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"2bac1-eSbMA1zbgnGSgzREY7vXXMC5oi4\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
-    "size": 178881,
-    "path": "../assets/_nuxt/DTkK67R7.js"
   },
   "/_nuxt/DdxuIxqs.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"12e3-BBo9ellXWvxNbYADdyA70MrusSM\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 4835,
     "path": "../assets/_nuxt/DdxuIxqs.js"
   },
-  "/_nuxt/DyOFk14m.js": {
+  "/_nuxt/D7SWhSiO.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"35ba-ddBxtxPOMkyDJuZP/agfQAt7zok\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
-    "size": 13754,
-    "path": "../assets/_nuxt/DyOFk14m.js"
-  },
-  "/_nuxt/PqC-XPwT.js": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"788-SBX/ZPEpQ4S+WS0oXZkRwyp1f0k\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
-    "size": 1928,
-    "path": "../assets/_nuxt/PqC-XPwT.js"
+    "etag": "\"59a-nl+Pdw1bAzkWDfi4pa+guY7HNeQ\"",
+    "mtime": "2026-02-05T08:49:47.352Z",
+    "size": 1434,
+    "path": "../assets/_nuxt/D7SWhSiO.js"
   },
   "/_nuxt/_id_.Du0-0u7j.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"7ac-oWyNFUeWl2ML4WQWT1sg4xc22ag\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 1964,
     "path": "../assets/_nuxt/_id_.Du0-0u7j.css"
   },
   "/_nuxt/auth.BkxHBHpN.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"179-WenXFtsfTch2ycBpLJfU+OVVpCI\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 377,
     "path": "../assets/_nuxt/auth.BkxHBHpN.css"
   },
-  "/_nuxt/caxzBv5A.js": {
+  "/_nuxt/DhxMMS2e.js": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"7f4-fg4d/xU5r7IlkdAE4/6OrR8M270\"",
-    "mtime": "2025-12-10T06:45:39.599Z",
-    "size": 2036,
-    "path": "../assets/_nuxt/caxzBv5A.js"
+    "etag": "\"15ed-efPLdQxkMtUASlRbzFHqtF9NKbA\"",
+    "mtime": "2026-02-05T08:49:47.352Z",
+    "size": 5613,
+    "path": "../assets/_nuxt/DhxMMS2e.js"
   },
   "/_nuxt/complex-ssr.CL_0LfAE.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"12d-VAyMf89XKFLSKB27WqyI3aI3in4\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 301,
     "path": "../assets/_nuxt/complex-ssr.CL_0LfAE.css"
+  },
+  "/_nuxt/caxzBv5A.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"7f4-fg4d/xU5r7IlkdAE4/6OrR8M270\"",
+    "mtime": "2026-02-05T08:49:47.352Z",
+    "size": 2036,
+    "path": "../assets/_nuxt/caxzBv5A.js"
   },
   "/_nuxt/dashboard.rHB_y2zZ.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"c1-G7nthPEGMzZ5ueZWefcH3G0fyTc\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 193,
     "path": "../assets/_nuxt/dashboard.rHB_y2zZ.css"
   },
-  "/_nuxt/default.BHINmRKA.css": {
+  "/_nuxt/default.DBuZju5J.css": {
     "type": "text/css; charset=utf-8",
-    "etag": "\"15fc-kbZaUd0EYQPIvyqpa5BL9RJTmAE\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "etag": "\"15fc-tEGCqS+v3Zrg8c4hXhbWI3F49d8\"",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 5628,
-    "path": "../assets/_nuxt/default.BHINmRKA.css"
+    "path": "../assets/_nuxt/default.DBuZju5J.css"
   },
   "/_nuxt/entry.B2N0aItG.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"c51-PEGyoIYfxx72bIoUyTL5rMkFBfk\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 3153,
     "path": "../assets/_nuxt/entry.B2N0aItG.css"
   },
   "/_nuxt/index.CFdcTK3S.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"637-6LC/6gmSbIrfvsUds0PEe+V10qY\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 1591,
     "path": "../assets/_nuxt/index.CFdcTK3S.css"
+  },
+  "/_nuxt/nNlWZlbp.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"788-mxdfoqFbRzXMDVDc5NspDlxHH18\"",
+    "mtime": "2026-02-05T08:49:47.352Z",
+    "size": 1928,
+    "path": "../assets/_nuxt/nNlWZlbp.js"
   },
   "/_nuxt/r5aQtUht.js": {
     "type": "text/javascript; charset=utf-8",
     "etag": "\"1320-89loCGsM+qvjUYZQDGeSkSee1Tc\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "mtime": "2026-02-05T08:49:47.352Z",
     "size": 4896,
     "path": "../assets/_nuxt/r5aQtUht.js"
   },
   "/_nuxt/stream.Cbvw5wZn.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"192-yo6RCCPZHNyM4pWPIw/JC2gSXNY\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "mtime": "2026-02-05T08:49:47.353Z",
     "size": 402,
     "path": "../assets/_nuxt/stream.Cbvw5wZn.css"
+  },
+  "/_nuxt/s7-fggtu.js": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"2da82-MFvWaB47+tfyJ4WA/3VBcMflG0g\"",
+    "mtime": "2026-02-05T08:49:47.353Z",
+    "size": 187010,
+    "path": "../assets/_nuxt/s7-fggtu.js"
   },
   "/_nuxt/test-isr.CBMdXJ-b.css": {
     "type": "text/css; charset=utf-8",
     "etag": "\"6d3-8u8vKbe3LT1GZbKAksBpKHCdLfo\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "mtime": "2026-02-05T08:49:47.353Z",
     "size": 1747,
     "path": "../assets/_nuxt/test-isr.CBMdXJ-b.css"
   },
-  "/_nuxt/test-ssr.C6Pna4V5.css": {
+  "/_nuxt/test-platform-middleware.BNSwdGqc.css": {
     "type": "text/css; charset=utf-8",
-    "etag": "\"4d-OOdvFTn0hfLKE3ZbQ8i+lowEPP8\"",
-    "mtime": "2025-12-10T06:45:39.600Z",
+    "etag": "\"31b-bScFC9dK9PRSjhmCV+g0kAzx8rM\"",
+    "mtime": "2026-02-05T08:49:47.353Z",
+    "size": 795,
+    "path": "../assets/_nuxt/test-platform-middleware.BNSwdGqc.css"
+  },
+  "/_nuxt/test-ssr.CdnoqzSR.css": {
+    "type": "text/css; charset=utf-8",
+    "etag": "\"4d-mq1VECbdjNR3SeAhRCB0XztdCCk\"",
+    "mtime": "2026-02-05T08:49:47.353Z",
     "size": 77,
-    "path": "../assets/_nuxt/test-ssr.C6Pna4V5.css"
+    "path": "../assets/_nuxt/test-ssr.CdnoqzSR.css"
+  },
+  "/icon/avator.jpg": {
+    "type": "image/jpeg",
+    "etag": "\"2a1e4-TUf6dwLHu3H0rzlGMvgdnPArMMw\"",
+    "mtime": "2026-02-05T08:49:47.357Z",
+    "size": 172516,
+    "path": "../assets/icon/avator.jpg"
   },
   "/test-ssg/_payload.json": {
     "type": "application/json;charset=utf-8",
-    "etag": "\"45-3z+peNTWAxK8KZY2oufjc5+LpoA\"",
-    "mtime": "2025-12-10T06:45:39.587Z",
+    "etag": "\"45-VdZLcQ+Oz033Qi/yg6SK4iESPII\"",
+    "mtime": "2026-02-05T08:49:47.324Z",
     "size": 69,
     "path": "../assets/test-ssg/_payload.json"
   },
+  "/icon/avator2.jpg": {
+    "type": "image/jpeg",
+    "etag": "\"2a1e4-TUf6dwLHu3H0rzlGMvgdnPArMMw\"",
+    "mtime": "2026-02-05T08:49:47.357Z",
+    "size": 172516,
+    "path": "../assets/icon/avator2.jpg"
+  },
   "/test-ssg/index.html": {
     "type": "text/html;charset=utf-8",
-    "etag": "\"2573-FLeW7VLfu4oxADW9wCymMePMNxA\"",
-    "mtime": "2025-12-10T06:45:39.585Z",
-    "size": 9587,
+    "etag": "\"24d9-F/Az1TUkpIUp1XnI/m9KT8gPP1Q\"",
+    "mtime": "2026-02-05T08:49:47.321Z",
+    "size": 9433,
     "path": "../assets/test-ssg/index.html"
+  },
+  "/_nuxt/builds/latest.json": {
+    "type": "application/json",
+    "etag": "\"47-hFTBM5RUm+fm5M/JRXI10picvII\"",
+    "mtime": "2026-02-05T08:49:47.340Z",
+    "size": 71,
+    "path": "../assets/_nuxt/builds/latest.json"
   },
   "/test/:id/_payload.json": {
     "type": "application/json;charset=utf-8",
-    "etag": "\"45-3z+peNTWAxK8KZY2oufjc5+LpoA\"",
-    "mtime": "2025-12-10T06:45:39.587Z",
+    "etag": "\"45-VmDxssx4/qkgWeHTYRkAThzpNik\"",
+    "mtime": "2026-02-05T08:49:47.325Z",
     "size": 69,
     "path": "../assets/test/:id/_payload.json"
   },
   "/test/:id/index.html": {
     "type": "text/html;charset=utf-8",
-    "etag": "\"2522-cLpDlQXUjWSeIxTWXkBGcdhk0CE\"",
-    "mtime": "2025-12-10T06:45:39.585Z",
-    "size": 9506,
+    "etag": "\"2488-jNOYVa2aBnxeH+VhS+e0PeMu2Go\"",
+    "mtime": "2026-02-05T08:49:47.322Z",
+    "size": 9352,
     "path": "../assets/test/:id/index.html"
   },
-  "/_nuxt/builds/latest.json": {
+  "/_nuxt/builds/meta/6284f445-11ef-4013-8598-958f40790302.json": {
     "type": "application/json",
-    "etag": "\"47-gMvyge+R46/Fy0jhuUA0FyQCQaY\"",
-    "mtime": "2025-12-10T06:45:39.594Z",
-    "size": 71,
-    "path": "../assets/_nuxt/builds/latest.json"
-  },
-  "/_nuxt/builds/meta/deb08dcb-37b6-43f9-9c63-59e0fd0216d9.json": {
-    "type": "application/json",
-    "etag": "\"10b-WFP9BA+RFkcbAx+EQSf8TfE93zU\"",
-    "mtime": "2025-12-10T06:45:39.593Z",
+    "etag": "\"10b-tUUFtChaYbemXKN63a4qhjpnIoo\"",
+    "mtime": "2026-02-05T08:49:47.338Z",
     "size": 267,
-    "path": "../assets/_nuxt/builds/meta/deb08dcb-37b6-43f9-9c63-59e0fd0216d9.json"
+    "path": "../assets/_nuxt/builds/meta/6284f445-11ef-4013-8598-958f40790302.json"
   }
 };
 
@@ -5068,7 +5181,6 @@ function normalizeWindowsPath(input = "") {
 }
 const _IS_ABSOLUTE_RE = /^[/\\](?![/\\])|^[/\\]{2}(?!\.)|^[A-Za-z]:[/\\]/;
 const _DRIVE_LETTER_RE = /^[A-Za-z]:$/;
-const _ROOT_FOLDER_RE = /^\/([A-Za-z]:)?$/;
 function cwd() {
   if (typeof process !== "undefined" && typeof process.cwd === "function") {
     return process.cwd().replace(/\\/g, "/");
@@ -5155,22 +5267,6 @@ function normalizeString(path, allowAboveRoot) {
 const isAbsolute = function(p) {
   return _IS_ABSOLUTE_RE.test(p);
 };
-const relative = function(from, to) {
-  const _from = resolve(from).replace(_ROOT_FOLDER_RE, "$1").split("/");
-  const _to = resolve(to).replace(_ROOT_FOLDER_RE, "$1").split("/");
-  if (_to[0][1] === ":" && _from[0][1] === ":" && _from[0] !== _to[0]) {
-    return _to.join("/");
-  }
-  const _fromCopy = [..._from];
-  for (const segment of _fromCopy) {
-    if (_to[0] !== segment) {
-      break;
-    }
-    _from.shift();
-    _to.shift();
-  }
-  return [..._from.map(() => ".."), ..._to].join("/");
-};
 const dirname = function(p) {
   const segments = normalizeWindowsPath(p).replace(/\/$/, "").split("/").slice(0, -1);
   if (segments.length === 1 && _DRIVE_LETTER_RE.test(segments[0])) {
@@ -5202,12 +5298,12 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _TPyi_l = eventHandler((event) => {
+const _ZPScSr = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
   let id = decodePath(
-    withLeadingSlash(withoutTrailingSlash(parseURL(event.path).pathname))
+    withLeadingSlash(withoutTrailingSlash$1(parseURL$1(event.path).pathname))
   );
   let asset;
   const encodingHeader = String(
@@ -5217,11 +5313,8 @@ const _TPyi_l = eventHandler((event) => {
     ...encodingHeader.split(",").map((e) => EncodingMap[e.trim()]).filter(Boolean).sort(),
     ""
   ];
-  if (encodings.length > 1) {
-    appendResponseHeader(event, "Vary", "Accept-Encoding");
-  }
   for (const encoding of encodings) {
-    for (const _id of [id + encoding, joinURL(id, "index.html" + encoding)]) {
+    for (const _id of [id + encoding, joinURL$1(id, "index.html" + encoding)]) {
       const _asset = getAsset(_id);
       if (_asset) {
         asset = _asset;
@@ -5233,9 +5326,12 @@ const _TPyi_l = eventHandler((event) => {
   if (!asset) {
     if (isPublicAssetURL(id)) {
       removeResponseHeader(event, "Cache-Control");
-      throw createError$1({ statusCode: 404 });
+      throw createError$2({ statusCode: 404 });
     }
     return;
+  }
+  if (asset.encoding !== void 0) {
+    appendResponseHeader(event, "Vary", "Accept-Encoding");
   }
   const ifNotMatch = getRequestHeader(event, "if-none-match") === asset.etag;
   if (ifNotMatch) {
@@ -5249,22 +5345,783 @@ const _TPyi_l = eventHandler((event) => {
     return "";
   }
   if (asset.type && !getResponseHeader(event, "Content-Type")) {
-    setResponseHeader(event, "Content-Type", asset.type);
+    setResponseHeader$1(event, "Content-Type", asset.type);
   }
   if (asset.etag && !getResponseHeader(event, "ETag")) {
-    setResponseHeader(event, "ETag", asset.etag);
+    setResponseHeader$1(event, "ETag", asset.etag);
   }
   if (asset.mtime && !getResponseHeader(event, "Last-Modified")) {
-    setResponseHeader(event, "Last-Modified", mtimeDate.toUTCString());
+    setResponseHeader$1(event, "Last-Modified", mtimeDate.toUTCString());
   }
   if (asset.encoding && !getResponseHeader(event, "Content-Encoding")) {
-    setResponseHeader(event, "Content-Encoding", asset.encoding);
+    setResponseHeader$1(event, "Content-Encoding", asset.encoding);
   }
   if (asset.size > 0 && !getResponseHeader(event, "Content-Length")) {
-    setResponseHeader(event, "Content-Length", asset.size);
+    setResponseHeader$1(event, "Content-Length", asset.size);
   }
   return readAsset(id);
 });
+
+const HASH_RE = /#/g;
+const AMPERSAND_RE = /&/g;
+const SLASH_RE = /\//g;
+const EQUAL_RE = /=/g;
+const PLUS_RE = /\+/g;
+const ENC_CARET_RE = /%5e/gi;
+const ENC_BACKTICK_RE = /%60/gi;
+const ENC_PIPE_RE = /%7c/gi;
+const ENC_SPACE_RE = /%20/gi;
+function encode(text) {
+  return encodeURI("" + text).replace(ENC_PIPE_RE, "|");
+}
+function encodeQueryValue(input) {
+  return encode(typeof input === "string" ? input : JSON.stringify(input)).replace(PLUS_RE, "%2B").replace(ENC_SPACE_RE, "+").replace(HASH_RE, "%23").replace(AMPERSAND_RE, "%26").replace(ENC_BACKTICK_RE, "`").replace(ENC_CARET_RE, "^").replace(SLASH_RE, "%2F");
+}
+function encodeQueryKey(text) {
+  return encodeQueryValue(text).replace(EQUAL_RE, "%3D");
+}
+function decode$1(text = "") {
+  try {
+    return decodeURIComponent("" + text);
+  } catch {
+    return "" + text;
+  }
+}
+function decodeQueryKey(text) {
+  return decode$1(text.replace(PLUS_RE, " "));
+}
+function decodeQueryValue(text) {
+  return decode$1(text.replace(PLUS_RE, " "));
+}
+
+function parseQuery(parametersString = "") {
+  const object = /* @__PURE__ */ Object.create(null);
+  if (parametersString[0] === "?") {
+    parametersString = parametersString.slice(1);
+  }
+  for (const parameter of parametersString.split("&")) {
+    const s = parameter.match(/([^=]+)=?(.*)/) || [];
+    if (s.length < 2) {
+      continue;
+    }
+    const key = decodeQueryKey(s[1]);
+    if (key === "__proto__" || key === "constructor") {
+      continue;
+    }
+    const value = decodeQueryValue(s[2] || "");
+    if (object[key] === void 0) {
+      object[key] = value;
+    } else if (Array.isArray(object[key])) {
+      object[key].push(value);
+    } else {
+      object[key] = [object[key], value];
+    }
+  }
+  return object;
+}
+function encodeQueryItem(key, value) {
+  if (typeof value === "number" || typeof value === "boolean") {
+    value = String(value);
+  }
+  if (!value) {
+    return encodeQueryKey(key);
+  }
+  if (Array.isArray(value)) {
+    return value.map(
+      (_value) => `${encodeQueryKey(key)}=${encodeQueryValue(_value)}`
+    ).join("&");
+  }
+  return `${encodeQueryKey(key)}=${encodeQueryValue(value)}`;
+}
+function stringifyQuery(query) {
+  return Object.keys(query).filter((k) => query[k] !== void 0).map((k) => encodeQueryItem(k, query[k])).filter(Boolean).join("&");
+}
+
+const PROTOCOL_STRICT_REGEX = /^[\s\w\0+.-]{2,}:([/\\]{1,2})/;
+const PROTOCOL_REGEX = /^[\s\w\0+.-]{2,}:([/\\]{2})?/;
+const PROTOCOL_RELATIVE_REGEX = /^([/\\]\s*){2,}[^/\\]/;
+const JOIN_LEADING_SLASH_RE = /^\.?\//;
+function hasProtocol(inputString, opts = {}) {
+  if (typeof opts === "boolean") {
+    opts = { acceptRelative: opts };
+  }
+  if (opts.strict) {
+    return PROTOCOL_STRICT_REGEX.test(inputString);
+  }
+  return PROTOCOL_REGEX.test(inputString) || (opts.acceptRelative ? PROTOCOL_RELATIVE_REGEX.test(inputString) : false);
+}
+function hasTrailingSlash(input = "", respectQueryAndFragment) {
+  {
+    return input.endsWith("/");
+  }
+}
+function withoutTrailingSlash(input = "", respectQueryAndFragment) {
+  {
+    return (hasTrailingSlash(input) ? input.slice(0, -1) : input) || "/";
+  }
+}
+function withTrailingSlash(input = "", respectQueryAndFragment) {
+  {
+    return input.endsWith("/") ? input : input + "/";
+  }
+}
+function withBase(input, base) {
+  if (isEmptyURL(base) || hasProtocol(input)) {
+    return input;
+  }
+  const _base = withoutTrailingSlash(base);
+  if (input.startsWith(_base)) {
+    return input;
+  }
+  return joinURL(_base, input);
+}
+function withQuery(input, query) {
+  const parsed = parseURL(input);
+  const mergedQuery = { ...parseQuery(parsed.search), ...query };
+  parsed.search = stringifyQuery(mergedQuery);
+  return stringifyParsedURL(parsed);
+}
+function getQuery$1(input) {
+  return parseQuery(parseURL(input).search);
+}
+function isEmptyURL(url) {
+  return !url || url === "/";
+}
+function isNonEmptyURL(url) {
+  return url && url !== "/";
+}
+function joinURL(base, ...input) {
+  let url = base || "";
+  for (const segment of input.filter((url2) => isNonEmptyURL(url2))) {
+    if (url) {
+      const _segment = segment.replace(JOIN_LEADING_SLASH_RE, "");
+      url = withTrailingSlash(url) + _segment;
+    } else {
+      url = segment;
+    }
+  }
+  return url;
+}
+
+const protocolRelative = Symbol.for("ufo:protocolRelative");
+function parseURL(input = "", defaultProto) {
+  const _specialProtoMatch = input.match(
+    /^[\s\0]*(blob:|data:|javascript:|vbscript:)(.*)/i
+  );
+  if (_specialProtoMatch) {
+    const [, _proto, _pathname = ""] = _specialProtoMatch;
+    return {
+      protocol: _proto.toLowerCase(),
+      pathname: _pathname,
+      href: _proto + _pathname,
+      auth: "",
+      host: "",
+      search: "",
+      hash: ""
+    };
+  }
+  if (!hasProtocol(input, { acceptRelative: true })) {
+    return defaultProto ? parseURL(defaultProto + input) : parsePath(input);
+  }
+  const [, protocol = "", auth, hostAndPath = ""] = input.replace(/\\/g, "/").match(/^[\s\0]*([\w+.-]{2,}:)?\/\/([^/@]+@)?(.*)/) || [];
+  let [, host = "", path = ""] = hostAndPath.match(/([^#/?]*)(.*)?/) || [];
+  if (protocol === "file:") {
+    path = path.replace(/\/(?=[A-Za-z]:)/, "");
+  }
+  const { pathname, search, hash } = parsePath(path);
+  return {
+    protocol: protocol.toLowerCase(),
+    auth: auth ? auth.slice(0, Math.max(0, auth.length - 1)) : "",
+    host,
+    pathname,
+    search,
+    hash,
+    [protocolRelative]: !protocol
+  };
+}
+function parsePath(input = "") {
+  const [pathname = "", search = "", hash = ""] = (input.match(/([^#?]*)(\?[^#]*)?(#.*)?/) || []).splice(1);
+  return {
+    pathname,
+    search,
+    hash
+  };
+}
+function stringifyParsedURL(parsed) {
+  const pathname = parsed.pathname || "";
+  const search = parsed.search ? (parsed.search.startsWith("?") ? "" : "?") + parsed.search : "";
+  const hash = parsed.hash || "";
+  const auth = parsed.auth ? parsed.auth + "@" : "";
+  const host = parsed.host || "";
+  const proto = parsed.protocol || parsed[protocolRelative] ? (parsed.protocol || "") + "//" : "";
+  return proto + auth + host + pathname + search + hash;
+}
+
+const fieldContentRegExp = /^[\u0009\u0020-\u007E\u0080-\u00FF]+$/;
+function serialize(name, value, options) {
+  const opt = options || {};
+  const enc = opt.encode || encodeURIComponent;
+  if (typeof enc !== "function") {
+    throw new TypeError("option encode is invalid");
+  }
+  if (!fieldContentRegExp.test(name)) {
+    throw new TypeError("argument name is invalid");
+  }
+  const encodedValue = enc(value);
+  if (encodedValue && !fieldContentRegExp.test(encodedValue)) {
+    throw new TypeError("argument val is invalid");
+  }
+  let str = name + "=" + encodedValue;
+  if (void 0 !== opt.maxAge && opt.maxAge !== null) {
+    const maxAge = opt.maxAge - 0;
+    if (Number.isNaN(maxAge) || !Number.isFinite(maxAge)) {
+      throw new TypeError("option maxAge is invalid");
+    }
+    str += "; Max-Age=" + Math.floor(maxAge);
+  }
+  if (opt.domain) {
+    if (!fieldContentRegExp.test(opt.domain)) {
+      throw new TypeError("option domain is invalid");
+    }
+    str += "; Domain=" + opt.domain;
+  }
+  if (opt.path) {
+    if (!fieldContentRegExp.test(opt.path)) {
+      throw new TypeError("option path is invalid");
+    }
+    str += "; Path=" + opt.path;
+  }
+  if (opt.expires) {
+    if (!isDate(opt.expires) || Number.isNaN(opt.expires.valueOf())) {
+      throw new TypeError("option expires is invalid");
+    }
+    str += "; Expires=" + opt.expires.toUTCString();
+  }
+  if (opt.httpOnly) {
+    str += "; HttpOnly";
+  }
+  if (opt.secure) {
+    str += "; Secure";
+  }
+  if (opt.priority) {
+    const priority = typeof opt.priority === "string" ? opt.priority.toLowerCase() : opt.priority;
+    switch (priority) {
+      case "low": {
+        str += "; Priority=Low";
+        break;
+      }
+      case "medium": {
+        str += "; Priority=Medium";
+        break;
+      }
+      case "high": {
+        str += "; Priority=High";
+        break;
+      }
+      default: {
+        throw new TypeError("option priority is invalid");
+      }
+    }
+  }
+  if (opt.sameSite) {
+    const sameSite = typeof opt.sameSite === "string" ? opt.sameSite.toLowerCase() : opt.sameSite;
+    switch (sameSite) {
+      case true: {
+        str += "; SameSite=Strict";
+        break;
+      }
+      case "lax": {
+        str += "; SameSite=Lax";
+        break;
+      }
+      case "strict": {
+        str += "; SameSite=Strict";
+        break;
+      }
+      case "none": {
+        str += "; SameSite=None";
+        break;
+      }
+      default: {
+        throw new TypeError("option sameSite is invalid");
+      }
+    }
+  }
+  if (opt.partitioned) {
+    str += "; Partitioned";
+  }
+  return str;
+}
+function isDate(val) {
+  return Object.prototype.toString.call(val) === "[object Date]" || val instanceof Date;
+}
+
+function parseSetCookie(setCookieValue, options) {
+  const parts = (setCookieValue || "").split(";").filter((str) => typeof str === "string" && !!str.trim());
+  const nameValuePairStr = parts.shift() || "";
+  const parsed = _parseNameValuePair(nameValuePairStr);
+  const name = parsed.name;
+  let value = parsed.value;
+  try {
+    value = options?.decode === false ? value : (options?.decode || decodeURIComponent)(value);
+  } catch {
+  }
+  const cookie = {
+    name,
+    value
+  };
+  for (const part of parts) {
+    const sides = part.split("=");
+    const partKey = (sides.shift() || "").trimStart().toLowerCase();
+    const partValue = sides.join("=");
+    switch (partKey) {
+      case "expires": {
+        cookie.expires = new Date(partValue);
+        break;
+      }
+      case "max-age": {
+        cookie.maxAge = Number.parseInt(partValue, 10);
+        break;
+      }
+      case "secure": {
+        cookie.secure = true;
+        break;
+      }
+      case "httponly": {
+        cookie.httpOnly = true;
+        break;
+      }
+      case "samesite": {
+        cookie.sameSite = partValue;
+        break;
+      }
+      default: {
+        cookie[partKey] = partValue;
+      }
+    }
+  }
+  return cookie;
+}
+function _parseNameValuePair(nameValuePairStr) {
+  let name = "";
+  let value = "";
+  const nameValueArr = nameValuePairStr.split("=");
+  if (nameValueArr.length > 1) {
+    name = nameValueArr.shift();
+    value = nameValueArr.join("=");
+  } else {
+    value = nameValuePairStr;
+  }
+  return { name, value };
+}
+
+function hasProp(obj, prop) {
+  try {
+    return prop in obj;
+  } catch {
+    return false;
+  }
+}
+
+class H3Error extends Error {
+  static __h3_error__ = true;
+  statusCode = 500;
+  fatal = false;
+  unhandled = false;
+  statusMessage;
+  data;
+  cause;
+  constructor(message, opts = {}) {
+    super(message, opts);
+    if (opts.cause && !this.cause) {
+      this.cause = opts.cause;
+    }
+  }
+  toJSON() {
+    const obj = {
+      message: this.message,
+      statusCode: sanitizeStatusCode(this.statusCode, 500)
+    };
+    if (this.statusMessage) {
+      obj.statusMessage = sanitizeStatusMessage(this.statusMessage);
+    }
+    if (this.data !== void 0) {
+      obj.data = this.data;
+    }
+    return obj;
+  }
+}
+function createError(input) {
+  if (typeof input === "string") {
+    return new H3Error(input);
+  }
+  if (isError(input)) {
+    return input;
+  }
+  const err = new H3Error(input.message ?? input.statusMessage ?? "", {
+    cause: input.cause || input
+  });
+  if (hasProp(input, "stack")) {
+    try {
+      Object.defineProperty(err, "stack", {
+        get() {
+          return input.stack;
+        }
+      });
+    } catch {
+      try {
+        err.stack = input.stack;
+      } catch {
+      }
+    }
+  }
+  if (input.data) {
+    err.data = input.data;
+  }
+  if (input.statusCode) {
+    err.statusCode = sanitizeStatusCode(input.statusCode, err.statusCode);
+  } else if (input.status) {
+    err.statusCode = sanitizeStatusCode(input.status, err.statusCode);
+  }
+  if (input.statusMessage) {
+    err.statusMessage = input.statusMessage;
+  } else if (input.statusText) {
+    err.statusMessage = input.statusText;
+  }
+  if (err.statusMessage) {
+    const originalMessage = err.statusMessage;
+    const sanitizedMessage = sanitizeStatusMessage(err.statusMessage);
+    if (sanitizedMessage !== originalMessage) {
+      console.warn(
+        "[h3] Please prefer using `message` for longer error messages instead of `statusMessage`. In the future, `statusMessage` will be sanitized by default."
+      );
+    }
+  }
+  if (input.fatal !== void 0) {
+    err.fatal = input.fatal;
+  }
+  if (input.unhandled !== void 0) {
+    err.unhandled = input.unhandled;
+  }
+  return err;
+}
+function isError(input) {
+  return input?.constructor?.__h3_error__ === true;
+}
+
+function getQuery(event) {
+  return getQuery$1(event.path || "");
+}
+function getMethod(event, defaultMethod = "GET") {
+  return (event.node.req.method || defaultMethod).toUpperCase();
+}
+function isMethod(event, expected, allowHead) {
+  if (typeof expected === "string") {
+    if (event.method === expected) {
+      return true;
+    }
+  } else if (expected.includes(event.method)) {
+    return true;
+  }
+  return false;
+}
+function assertMethod(event, expected, allowHead) {
+  if (!isMethod(event, expected)) {
+    throw createError({
+      statusCode: 405,
+      statusMessage: "HTTP method is not allowed."
+    });
+  }
+}
+function getRequestHost(event, opts = {}) {
+  if (opts.xForwardedHost) {
+    const _header = event.node.req.headers["x-forwarded-host"];
+    const xForwardedHost = (_header || "").split(",").shift()?.trim();
+    if (xForwardedHost) {
+      return xForwardedHost;
+    }
+  }
+  return event.node.req.headers.host || "localhost";
+}
+function getRequestProtocol(event, opts = {}) {
+  if (opts.xForwardedProto !== false && event.node.req.headers["x-forwarded-proto"] === "https") {
+    return "https";
+  }
+  return event.node.req.connection?.encrypted ? "https" : "http";
+}
+function getRequestURL(event, opts = {}) {
+  const host = getRequestHost(event, opts);
+  const protocol = getRequestProtocol(event, opts);
+  const path = (event.node.req.originalUrl || event.path).replace(
+    /^[/\\]+/g,
+    "/"
+  );
+  return new URL(path, `${protocol}://${host}`);
+}
+
+const RawBodySymbol = Symbol.for("h3RawBody");
+const ParsedBodySymbol = Symbol.for("h3ParsedBody");
+const PayloadMethods$1 = ["PATCH", "POST", "PUT", "DELETE"];
+function readRawBody(event, encoding = "utf8") {
+  assertMethod(event, PayloadMethods$1);
+  const _rawBody = event._requestBody || event.web?.request?.body || event.node.req[RawBodySymbol] || event.node.req.rawBody || event.node.req.body;
+  if (_rawBody) {
+    const promise2 = Promise.resolve(_rawBody).then((_resolved) => {
+      if (Buffer.isBuffer(_resolved)) {
+        return _resolved;
+      }
+      if (typeof _resolved.pipeTo === "function") {
+        return new Promise((resolve, reject) => {
+          const chunks = [];
+          _resolved.pipeTo(
+            new WritableStream({
+              write(chunk) {
+                chunks.push(chunk);
+              },
+              close() {
+                resolve(Buffer.concat(chunks));
+              },
+              abort(reason) {
+                reject(reason);
+              }
+            })
+          ).catch(reject);
+        });
+      } else if (typeof _resolved.pipe === "function") {
+        return new Promise((resolve, reject) => {
+          const chunks = [];
+          _resolved.on("data", (chunk) => {
+            chunks.push(chunk);
+          }).on("end", () => {
+            resolve(Buffer.concat(chunks));
+          }).on("error", reject);
+        });
+      }
+      if (_resolved.constructor === Object) {
+        return Buffer.from(JSON.stringify(_resolved));
+      }
+      if (_resolved instanceof URLSearchParams) {
+        return Buffer.from(_resolved.toString());
+      }
+      if (_resolved instanceof FormData) {
+        return new Response(_resolved).bytes().then((uint8arr) => Buffer.from(uint8arr));
+      }
+      return Buffer.from(_resolved);
+    });
+    return encoding ? promise2.then((buff) => buff.toString(encoding)) : promise2;
+  }
+  if (!Number.parseInt(event.node.req.headers["content-length"] || "") && !String(event.node.req.headers["transfer-encoding"] ?? "").split(",").map((e) => e.trim()).filter(Boolean).includes("chunked")) {
+    return Promise.resolve(void 0);
+  }
+  const promise = event.node.req[RawBodySymbol] = new Promise(
+    (resolve, reject) => {
+      const bodyData = [];
+      event.node.req.on("error", (err) => {
+        reject(err);
+      }).on("data", (chunk) => {
+        bodyData.push(chunk);
+      }).on("end", () => {
+        resolve(Buffer.concat(bodyData));
+      });
+    }
+  );
+  const result = encoding ? promise.then((buff) => buff.toString(encoding)) : promise;
+  return result;
+}
+async function readBody(event, options = {}) {
+  const request = event.node.req;
+  if (hasProp(request, ParsedBodySymbol)) {
+    return request[ParsedBodySymbol];
+  }
+  const contentType = request.headers["content-type"] || "";
+  const body = await readRawBody(event);
+  let parsed;
+  if (contentType === "application/json") {
+    parsed = _parseJSON(body, options.strict ?? true);
+  } else if (contentType.startsWith("application/x-www-form-urlencoded")) {
+    parsed = _parseURLEncodedBody(body);
+  } else if (contentType.startsWith("text/")) {
+    parsed = body;
+  } else {
+    parsed = _parseJSON(body, options.strict ?? false);
+  }
+  request[ParsedBodySymbol] = parsed;
+  return parsed;
+}
+function _parseJSON(body = "", strict) {
+  if (!body) {
+    return void 0;
+  }
+  try {
+    return destr(body, { strict });
+  } catch {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Bad Request",
+      message: "Invalid JSON body"
+    });
+  }
+}
+function _parseURLEncodedBody(body) {
+  const form = new URLSearchParams(body);
+  const parsedForm = /* @__PURE__ */ Object.create(null);
+  for (const [key, value] of form.entries()) {
+    if (hasProp(parsedForm, key)) {
+      if (!Array.isArray(parsedForm[key])) {
+        parsedForm[key] = [parsedForm[key]];
+      }
+      parsedForm[key].push(value);
+    } else {
+      parsedForm[key] = value;
+    }
+  }
+  return parsedForm;
+}
+
+const DISALLOWED_STATUS_CHARS = /[^\u0009\u0020-\u007E]/g;
+function sanitizeStatusMessage(statusMessage = "") {
+  return statusMessage.replace(DISALLOWED_STATUS_CHARS, "");
+}
+function sanitizeStatusCode(statusCode, defaultStatusCode = 200) {
+  if (!statusCode) {
+    return defaultStatusCode;
+  }
+  if (typeof statusCode === "string") {
+    statusCode = Number.parseInt(statusCode, 10);
+  }
+  if (statusCode < 100 || statusCode > 999) {
+    return defaultStatusCode;
+  }
+  return statusCode;
+}
+
+function getDistinctCookieKey(name, opts) {
+  return [name, opts.domain || "", opts.path || "/"].join(";");
+}
+function setCookie(event, name, value, serializeOptions = {}) {
+  if (!serializeOptions.path) {
+    serializeOptions = { path: "/", ...serializeOptions };
+  }
+  const newCookie = serialize(name, value, serializeOptions);
+  const currentCookies = splitCookiesString(
+    event.node.res.getHeader("set-cookie")
+  );
+  if (currentCookies.length === 0) {
+    event.node.res.setHeader("set-cookie", newCookie);
+    return;
+  }
+  const newCookieKey = getDistinctCookieKey(name, serializeOptions);
+  event.node.res.removeHeader("set-cookie");
+  for (const cookie of currentCookies) {
+    const parsed = parseSetCookie(cookie);
+    const key = getDistinctCookieKey(parsed.name, parsed);
+    if (key === newCookieKey) {
+      continue;
+    }
+    event.node.res.appendHeader("set-cookie", cookie);
+  }
+  event.node.res.appendHeader("set-cookie", newCookie);
+}
+function splitCookiesString(cookiesString) {
+  if (Array.isArray(cookiesString)) {
+    return cookiesString.flatMap((c) => splitCookiesString(c));
+  }
+  if (typeof cookiesString !== "string") {
+    return [];
+  }
+  const cookiesStrings = [];
+  let pos = 0;
+  let start;
+  let ch;
+  let lastComma;
+  let nextStart;
+  let cookiesSeparatorFound;
+  const skipWhitespace = () => {
+    while (pos < cookiesString.length && /\s/.test(cookiesString.charAt(pos))) {
+      pos += 1;
+    }
+    return pos < cookiesString.length;
+  };
+  const notSpecialChar = () => {
+    ch = cookiesString.charAt(pos);
+    return ch !== "=" && ch !== ";" && ch !== ",";
+  };
+  while (pos < cookiesString.length) {
+    start = pos;
+    cookiesSeparatorFound = false;
+    while (skipWhitespace()) {
+      ch = cookiesString.charAt(pos);
+      if (ch === ",") {
+        lastComma = pos;
+        pos += 1;
+        skipWhitespace();
+        nextStart = pos;
+        while (pos < cookiesString.length && notSpecialChar()) {
+          pos += 1;
+        }
+        if (pos < cookiesString.length && cookiesString.charAt(pos) === "=") {
+          cookiesSeparatorFound = true;
+          pos = nextStart;
+          cookiesStrings.push(cookiesString.slice(start, lastComma));
+          start = pos;
+        } else {
+          pos = lastComma + 1;
+        }
+      } else {
+        pos += 1;
+      }
+    }
+    if (!cookiesSeparatorFound || pos >= cookiesString.length) {
+      cookiesStrings.push(cookiesString.slice(start));
+    }
+  }
+  return cookiesStrings;
+}
+
+typeof setImmediate === "undefined" ? (fn) => fn() : setImmediate;
+function setResponseHeader(event, name, value) {
+  event.node.res.setHeader(name, value);
+}
+const setHeader = setResponseHeader;
+
+function defineEventHandler(handler) {
+  if (typeof handler === "function") {
+    handler.__is_handler__ = true;
+    return handler;
+  }
+  const _hooks = {
+    onRequest: _normalizeArray(handler.onRequest),
+    onBeforeResponse: _normalizeArray(handler.onBeforeResponse)
+  };
+  const _handler = (event) => {
+    return _callHandler(event, handler.handler, _hooks);
+  };
+  _handler.__is_handler__ = true;
+  _handler.__resolve__ = handler.handler.__resolve__;
+  _handler.__websocket__ = handler.websocket;
+  return _handler;
+}
+function _normalizeArray(input) {
+  return input ? Array.isArray(input) ? input : [input] : void 0;
+}
+async function _callHandler(event, handler, hooks) {
+  if (hooks.onRequest) {
+    for (const hook of hooks.onRequest) {
+      await hook(event);
+      if (event.handled) {
+        return;
+      }
+    }
+  }
+  const body = await handler(event);
+  const response = { body };
+  if (hooks.onBeforeResponse) {
+    for (const hook of hooks.onBeforeResponse) {
+      await hook(event, response);
+    }
+  }
+  return response.body;
+}
 
 const _SxA8c9 = defineEventHandler(() => {});
 
@@ -5274,32 +6131,34 @@ const _lazy_lUNbiK = () => import('../routes/api/cookies-test-v4.mjs');
 const _lazy_5uDJkA = () => import('../routes/api/cookies-test-v5.mjs');
 const _lazy_7emrQ2 = () => import('../routes/api/cookies-test-v6.mjs');
 const _lazy_jkN6lF = () => import('../routes/api/cookies-test.mjs');
+const _lazy_2335T1 = () => import('../routes/api/edge-test.mjs');
 const _lazy_SlzJEI = () => import('../routes/api/env.mjs');
 const _lazy_cmjr8V = () => import('../routes/api/seconde/query-test.get.mjs');
 const _lazy_Wp7kwI = () => import('../routes/api/server-test.mjs');
 const _lazy_eKFXjA = () => import('../routes/api/stream.mjs');
 const _lazy_z51IXh = () => import('../routes/api/test-post.mjs');
 const _lazy_mTAn0i = () => import('../routes/api/time.mjs');
-const _lazy_jR21B6 = () => import('../routes/renderer.mjs').then(function (n) { return n.r; });
+const _lazy_FKupDg = () => import('../routes/renderer.mjs').then(function (n) { return n.r; });
 
 const handlers = [
-  { route: '', handler: _TPyi_l, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _ZPScSr, lazy: false, middleware: true, method: undefined },
   { route: '/api/cookies-test-v2', handler: _lazy_9SmgMm, lazy: true, middleware: false, method: undefined },
   { route: '/api/cookies-test-v3', handler: _lazy_LYHM89, lazy: true, middleware: false, method: undefined },
   { route: '/api/cookies-test-v4', handler: _lazy_lUNbiK, lazy: true, middleware: false, method: undefined },
   { route: '/api/cookies-test-v5', handler: _lazy_5uDJkA, lazy: true, middleware: false, method: undefined },
   { route: '/api/cookies-test-v6', handler: _lazy_7emrQ2, lazy: true, middleware: false, method: undefined },
   { route: '/api/cookies-test', handler: _lazy_jkN6lF, lazy: true, middleware: false, method: undefined },
+  { route: '/api/edge-test', handler: _lazy_2335T1, lazy: true, middleware: false, method: undefined },
   { route: '/api/env', handler: _lazy_SlzJEI, lazy: true, middleware: false, method: undefined },
   { route: '/api/seconde/query-test', handler: _lazy_cmjr8V, lazy: true, middleware: false, method: "get" },
   { route: '/api/server-test', handler: _lazy_Wp7kwI, lazy: true, middleware: false, method: undefined },
   { route: '/api/stream', handler: _lazy_eKFXjA, lazy: true, middleware: false, method: undefined },
   { route: '/api/test-post', handler: _lazy_z51IXh, lazy: true, middleware: false, method: undefined },
   { route: '/api/time', handler: _lazy_mTAn0i, lazy: true, middleware: false, method: undefined },
-  { route: '/__nuxt_error', handler: _lazy_jR21B6, lazy: true, middleware: false, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_FKupDg, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
-  { route: '/test-isr', handler: _lazy_jR21B6, lazy: true, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_jR21B6, lazy: true, middleware: false, method: undefined }
+  { route: '/test-isr', handler: _lazy_FKupDg, lazy: true, middleware: false, method: undefined },
+  { route: '/**', handler: _lazy_FKupDg, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -5320,7 +6179,7 @@ function createNitroApp() {
     }
   };
   const h3App = createApp({
-    debug: destr(false),
+    debug: destr$1(false),
     onError: (error, event) => {
       captureError(error, { event, tags: ["request"] });
       return errorHandler(error, event);
@@ -5451,7 +6310,7 @@ function defineRenderHandler(render) {
     await nitroApp.hooks.callHook("render:before", ctx);
     if (!ctx.response) {
       if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
-        setResponseHeader(event, "Content-Type", "image/x-icon");
+        setResponseHeader$1(event, "Content-Type", "image/x-icon");
         return send(
           event,
           "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -5779,7 +6638,7 @@ const cert = process.env.NITRO_SSL_CERT;
 const key = process.env.NITRO_SSL_KEY;
 const nitroApp = useNitroApp();
 const server = cert && key ? new Server({ key, cert }, toNodeListener(nitroApp.h3App)) : new Server$1(toNodeListener(nitroApp.h3App));
-const port = destr(process.env.NITRO_PORT || process.env.PORT) || 3e3;
+const port = destr$1(process.env.NITRO_PORT || process.env.PORT) || 3e3;
 const host = process.env.NITRO_HOST || process.env.HOST;
 const path = process.env.NITRO_UNIX_SOCKET;
 const listener = server.listen(path ? { path } : { port, host }, (err) => {
@@ -5801,5 +6660,5 @@ trapUnhandledNodeErrors();
 setupGracefulShutdown(listener, nitroApp);
 const nodeServer = {};
 
-export { $fetch as $, createHooks as A, executeAsync as B, toRouteMatcher as C, createRouter$1 as D, defu as E, hash$1 as F, klona as G, parse as H, getRequestHeader as I, isEqual as J, getCookie as K, deleteCookie as L, nodeServer as M, setCookie as a, getMethod as b, getRequestURL as c, defineEventHandler as d, createError$1 as e, getResponseStatusText as f, getQuery as g, getResponseStatus as h, defineRenderHandler as i, joinRelativeURL as j, destr as k, getRouteRules as l, relative as m, joinURL as n, useNitroApp as o, parseQuery as p, hasProtocol as q, readBody as r, setHeader as s, withTrailingSlash as t, useRuntimeConfig as u, withoutTrailingSlash as v, withQuery as w, isScriptProtocol as x, getContext as y, sanitizeStatusCode as z };
+export { getRequestHeaders as A, hasProtocol$1 as B, withQuery$1 as C, withTrailingSlash$1 as D, withoutTrailingSlash$1 as E, isScriptProtocol as F, getContext as G, sanitizeStatusCode$1 as H, createHooks as I, executeAsync as J, toRouteMatcher as K, createRouter$1 as L, defu as M, hash$1 as N, klona as O, parse as P, getRequestHeader as Q, isEqual as R, setCookie$1 as S, getCookie as T, deleteCookie as U, nodeServer as V, setCookie as a, getMethod as b, getRequestURL as c, defineEventHandler as d, createError as e, getResponseStatusText as f, getQuery as g, getResponseStatus as h, defineRenderHandler as i, joinRelativeURL as j, getQuery$2 as k, createError$2 as l, destr$1 as m, getRouteRules as n, joinURL$1 as o, useNitroApp as p, destr as q, readBody as r, setHeader as s, withQuery as t, useRuntimeConfig as u, i as v, withBase as w, s$1 as x, l as y, parseQuery$1 as z };
 //# sourceMappingURL=nitro.mjs.map

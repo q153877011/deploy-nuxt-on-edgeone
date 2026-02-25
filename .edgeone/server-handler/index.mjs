@@ -1,5 +1,5 @@
 
-  import { createFrameworkServer } from './bootstrap.js';
+  import { createFrameworkServer, importShim } from './bootstrap.js';
   import handler from './handler.js';
-
+  importShim();
   createFrameworkServer(handler);
