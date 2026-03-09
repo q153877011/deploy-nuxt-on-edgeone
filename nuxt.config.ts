@@ -38,13 +38,13 @@ export default defineNuxtConfig({
     }
   },
   devtools: { enabled: true },
-  nitro: {
-    output: {
-      dir: '.edgeone',
-      publicDir: '.edgeone/assets',
-      serverDir: '.edgeone/server-handler'
-    }
-  },
+  // nitro: {
+  //   output: {
+  //     dir: '.edgeone',
+  //     publicDir: '.edgeone/assets',
+  //     serverDir: '.edgeone/server-handler'
+  //   }
+  // },
   // nitro: {
   //   output: {
   //     dir: '.edgeone',
