@@ -33,6 +33,6 @@ export function middleware(context) {
     //   '/api', // 匹配边缘函数
       // '/globe.svg', // 匹配静态资源
       // '/api/time',
-      'test-middleware'
+      '/test-middleware'
     ],
   }
