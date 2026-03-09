@@ -26,11 +26,25 @@ export default defineNuxtConfig({
       prerender: true
     },
     '/test-ssg': {
-      prerender: true
+      prerender: true,
+      headers: {
+        'Cache-Control': 'max-age=3600'
+      },
+    },
+    '/api/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
+      }
     }
   },
   devtools: { enabled: true },
-  nitro: {}
+  nitro: {
+    output: {
+      dir: '.edgeone',
+      publicDir: '.edgeone/assets',
+      serverDir: '.edgeone/server-handler'
+    }
+  },
   // nitro: {
   //   output: {
   //     dir: '.edgeone',
@@ -49,4 +63,5 @@ export default defineNuxtConfig({
   //     serverDir: '.edgeone/server-handler'
   //   }
   // },
+
 })

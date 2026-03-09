@@ -1,5 +1,5 @@
 {
-  "date": "2026-02-25T03:07:20.371Z",
+  "date": "2026-03-09T04:18:27.620Z",
   "preset": "node-server",
   "framework": {
     "name": "nuxt",
@@ -9,7 +9,7 @@
     "nitro": "2.13.0"
   },
   "commands": {
-    "preview": "node server-handler/index.mjs"
+    "preview": "node cloud-functions/ssr-node/index.mjs"
   },
   "config": {}
 }

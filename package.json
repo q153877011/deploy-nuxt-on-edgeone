@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "deploy": "edgeone pages deploy .edgeone -n test-nuxt-deploy -t Vji7QZIV2XxiAtHkw2qmuwI7pvViQ2icCsQZs9SqbCw="
+    "deploy-test": "edgeone pages deploy .edgeone -n test-nuxt-deploy -t QojhSyWK2D6J4b4uvFP/ZBOWv7AQuPiuDaxziRzFqjA="
   },
   "dependencies": {
     "@nuxt/content": "^3.10.0",
