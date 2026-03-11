@@ -10,11 +10,9 @@
     "postinstall": "nuxt prepare",
     "deploy2": "edgeone pages deploy .edgeone -n test--deploy2 -t QojhSyWK2D6J4b4uvFP/ZBOWv7AQuPiuDaxziRzFqjA=",
     "deploy": "edgeone pages deploy .edgeone -n test-nuxt-new-router -t ysZv14YUI5NZiDPhSrKM5Xa/nAVSSpxiQyZD1EUBGZU="
-
   },
   "dependencies": {
     "@nuxt/content": "^3.10.0",
-    "@tencent/edgeone": "^1.3.1-beta.18",
     "better-sqlite3": "^12.5.0",
     "nuxt": "4.1.3",
     "vercel": "^50.1.3",
