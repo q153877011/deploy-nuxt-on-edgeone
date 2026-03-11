@@ -1,5 +1,3 @@
 {
-    "routesExtend": {
-        "dynamic": ["/icon/avator2.jpg"]
-    }
+    "trailingSlash": true
 }

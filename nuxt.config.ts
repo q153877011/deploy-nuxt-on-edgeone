@@ -14,7 +14,7 @@ const options = {
 }
 
 export default defineNuxtConfig({
-  srcDir: 'app',
+srcDir: 'app',
   routeRules: {
     '/about': {
       prerender: true
@@ -31,9 +31,14 @@ export default defineNuxtConfig({
         'Cache-Control': 'max-age=3600'
       },
     },
-    '/api/**': {
+    '/api/cookies-test-cache': {
       headers: {
         'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
+      }
+    },
+    '/api/cookies-test': {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate'
       }
     }
   },
@@ -63,5 +68,5 @@ export default defineNuxtConfig({
   //     serverDir: '.edgeone/server-handler'
   //   }
   // },
-
+  nitro: {}
 })
