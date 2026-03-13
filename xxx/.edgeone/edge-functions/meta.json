@@ -1,0 +1,21 @@
+{
+  "routes": [
+    {
+      "routePath": "/hello-edge",
+      "mountPath": "/",
+      "method": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH",
+        "HEAD",
+        "OPTIONS"
+      ],
+      "module": [
+        "edge-functions/hello-edge.js:onRequest"
+      ]
+    }
+  ],
+  "middleware": null
+}

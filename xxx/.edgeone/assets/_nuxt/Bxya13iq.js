@@ -1,0 +1,1 @@
+import{_ as t,a as s,e as n,b as o}from"#entry";const r={};function a(c,e){return o(),s("section",null,[...e[0]||(e[0]=[n("p",null,"Nuxt SSG Page",-1)])])}const _=t(r,[["render",a]]);export{_ as default};

@@ -1,0 +1,118 @@
+{
+  "frameworkRoutes": [
+    {
+      "path": "/about",
+      "isStatic": true
+    },
+    {
+      "path": "/test/:id",
+      "isStatic": true
+    },
+    {
+      "path": "/test-ssg",
+      "isStatic": true
+    },
+    {
+      "path": "/test-isr",
+      "isStatic": false,
+      "isr": 5
+    },
+    {
+      "path": "/api/cookies-test-cache",
+      "isStatic": false
+    },
+    {
+      "path": "/api/cookies-test",
+      "isStatic": false
+    },
+    {
+      "path": "/auth",
+      "isStatic": false
+    },
+    {
+      "path": "/",
+      "isStatic": false
+    },
+    {
+      "path": "/stream",
+      "isStatic": false
+    },
+    {
+      "path": "/:all*",
+      "isStatic": false
+    },
+    {
+      "path": "/test-ssr",
+      "isStatic": false
+    },
+    {
+      "path": "/dashboard",
+      "isStatic": false
+    },
+    {
+      "path": "/posts/:id",
+      "isStatic": false
+    },
+    {
+      "path": "/complex-ssr",
+      "isStatic": false
+    },
+    {
+      "path": "/cookies-ssr",
+      "isStatic": false
+    },
+    {
+      "path": "/tencentcloud-images",
+      "isStatic": false
+    },
+    {
+      "path": "/test-platform-middleware",
+      "isStatic": false
+    },
+    {
+      "path": "/api/cookies-test-v2"
+    },
+    {
+      "path": "/api/cookies-test-v3"
+    },
+    {
+      "path": "/api/cookies-test-v4"
+    },
+    {
+      "path": "/api/cookies-test-v5"
+    },
+    {
+      "path": "/api/cookies-test-v6"
+    },
+    {
+      "path": "/api/edge-test"
+    },
+    {
+      "path": "/api/env"
+    },
+    {
+      "path": "/api/seconde/query-test"
+    },
+    {
+      "path": "/api/server-test"
+    },
+    {
+      "path": "/api/stream"
+    },
+    {
+      "path": "/api/test-post"
+    },
+    {
+      "path": "/api/time"
+    },
+    {
+      "path": "/__nuxt_error"
+    },
+    {
+      "path": "^\\/__nuxt_island\\/.[^\\/]*$"
+    }
+  ],
+  "conf": {
+    "ssr404": true
+  }
+}

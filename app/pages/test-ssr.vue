@@ -20,6 +20,16 @@
       <p>时区：{{ data.timezone }}</p>
     </div>
 
+    <div v-if="edgePending">Edge 请求中...</div>
+    <div v-else>
+      <p>Edge 请求成功：{{ edgeSuccess }}</p>
+    </div>
+
+    <div v-if="nodePending">Node 请求中...</div>
+    <div v-else>
+      <p>Node 返回：{{ nodeResult }}</p>
+    </div>
+
     <button @click="() => refresh()">刷新数据（客户端）</button>
   </section>
  </template>
@@ -36,6 +46,26 @@ const { data, pending, error, refresh } = await useFetch('/api/time', {
     timestamp: 0, 
     timezone: '' 
   })
+})
+
+const { data: edgeSuccess, pending: edgePending } = await useFetch('/hello-edge', {
+  server: true,
+  key: 'hello-edge-data',
+  default: () => false,
+  transform: () => true
+})
+
+const nodePending = ref(true)
+const nodeResult = ref('')
+
+onMounted(async () => {
+  try {
+    nodeResult.value = await $fetch('/hello-node')
+  } catch {
+    nodeResult.value = '请求失败'
+  } finally {
+    nodePending.value = false
+  }
 })
 
 const { data: testData } = await useFetch('/api/seconde/query-test?name=张三&age=25&active=true', {
