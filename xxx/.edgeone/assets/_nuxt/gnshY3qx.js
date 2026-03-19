@@ -1,1 +1,0 @@
-import{_ as a,a as s,e as o,t as r,P as t,b as n}from"#entry";const c={};function l(e,_){return n(),s("div",null,[o("h1",null,"Test Page - "+r((e._.provides[t]||e.$route).params.id),1)])}const d=a(c,[["render",l]]);export{d as default};

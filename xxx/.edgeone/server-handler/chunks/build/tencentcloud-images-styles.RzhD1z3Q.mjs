@@ -1,8 +1,0 @@
-const tencentcloudImages_vue_vue_type_style_index_0_scoped_d6282208_lang = ".tencentcloud-images[data-v-d6282208]{background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:40px 20px}.container[data-v-d6282208]{margin:0 auto;max-width:1200px}.title[data-v-d6282208]{color:#fff;font-size:2.5rem;font-weight:700;margin-bottom:16px;text-align:center}.description[data-v-d6282208]{color:#ffffffe6;font-size:1.1rem;margin-bottom:40px;text-align:center}.images-grid[data-v-d6282208]{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.image-card[data-v-d6282208]{background:#fff;border-radius:16px;box-shadow:0 10px 30px #0003;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease}.image-card[data-v-d6282208]:hover{box-shadow:0 20px 40px #0000004d;transform:translateY(-8px)}.image-wrapper[data-v-d6282208]{aspect-ratio:16/9;background:#f5f5f5;overflow:hidden;width:100%}.image[data-v-d6282208]{display:block;height:100%;-o-object-fit:cover;object-fit:cover;width:100%}.image-info[data-v-d6282208]{padding:20px}.image-title[data-v-d6282208]{color:#333;font-size:1.25rem;font-weight:600;margin:0 0 8px}.image-filename[data-v-d6282208]{color:#666;font-family:monospace;font-size:.9rem;margin:0}@media(max-width:768px){.title[data-v-d6282208]{font-size:2rem}.description[data-v-d6282208]{font-size:1rem}.images-grid[data-v-d6282208]{grid-template-columns:1fr}}";
-
-const tencentcloudImagesStyles_RzhD1z3Q = [
-  tencentcloudImages_vue_vue_type_style_index_0_scoped_d6282208_lang
-];
-
-export { tencentcloudImagesStyles_RzhD1z3Q as default };
-//# sourceMappingURL=tencentcloud-images-styles.RzhD1z3Q.mjs.map

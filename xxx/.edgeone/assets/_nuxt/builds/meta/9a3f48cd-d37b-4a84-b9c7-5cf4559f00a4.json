@@ -1,1 +1,0 @@
-{"id":"9a3f48cd-d37b-4a84-b9c7-5cf4559f00a4","timestamp":1773227163526,"matcher":{"static":{"/about":{"prerender":true},"/test-ssg":{"prerender":true}},"wildcard":{},"dynamic":{"/test":{"static":{"/":{"prerender":true}},"wildcard":{},"dynamic":{}}}},"prerendered":[]}
